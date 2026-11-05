@@ -15,15 +15,16 @@
 <meta property="og:image:alt" content="S2F Tracker logo and the words sequence-to-function models, mapped">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://eastmanmd.github.io/S2F-tracker/assets/social-preview.png">
-<meta name="theme-color" content="#0a0e14">
+<meta name="theme-color" content="#ffffff">
 <link rel="alternate" type="application/atom+xml" title="S2F Tracker — weekly changes" href="feed.xml">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <link rel="stylesheet" href="styles.css">
-<script>/* set the saved theme before first paint, so a light-mode visitor never sees a dark flash */
-try { if (localStorage.getItem("s2f-theme") === "light") document.documentElement.dataset.theme = "light"; } catch (e) {}</script>
+<script>/* Apply the saved theme before first paint; default to light. */
+try { if (localStorage.getItem("s2f-theme") !== "dark") document.documentElement.dataset.theme = "light"; }
+catch (e) { document.documentElement.dataset.theme = "light"; }</script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -41,7 +42,7 @@ try { if (localStorage.getItem("s2f-theme") === "light") document.documentElemen
       <a href="#v=papers" data-view="papers">Citing papers</a>
       <a href="#v=methods" data-view="methods">Methods</a>
     </nav>
-    <button class="theme" id="theme-btn" type="button" aria-label="Switch to light background" title="Switch to light background">
+    <button class="theme" id="theme-btn" type="button" aria-label="Switch to dark background" title="Switch to dark background">
       <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7z" fill="currentColor"/></svg>
       <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></g></svg>
     </button>
