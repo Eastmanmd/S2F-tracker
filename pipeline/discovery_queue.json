@@ -1,0 +1,737 @@
+{
+ "_comment": [
+  "Candidate models found by pipeline/discover.py, awaiting review.",
+  "",
+  "This file is hand-edited, like registry.json. discover.py only ever",
+  "appends new candidates and refreshes the fields of existing ones; it",
+  "never sets a status and never edits registry.json.",
+  "",
+  "To review a row, set its status:",
+  "  new       - not yet reviewed (what discover.py writes)",
+  "  dismissed - not a sequence-to-function model, stop showing it",
+  "  added     - promoted into registry.json",
+  "",
+  "Add a 'note' to a row to record why. Dismissed rows stay here so the",
+  "judgement survives; they are counted, not re-surfaced.",
+  "",
+  "matches_tracked_model flags a registry name appearing in the title.",
+  "It is a hint, not a verdict -- check before dismissing on it."
+ ],
+ "schema": 1,
+ "candidates": [
+  {
+   "key": "arxiv:2611.03806",
+   "source": "arxiv",
+   "doi": null,
+   "url": "https://arxiv.org/abs/2611.03806v1",
+   "title": "BEND 2.0: Benchmarking the Capabilities Needed to Design DNA",
+   "abstract": "Genomic foundation models are increasingly used to propose DNA sequences and edits. But successful design requires capabilities that current benchmarks do not measure. Here we introduce BEND 2.0 (BENchmark for DNA language models), which tests how well models predict the effects of DNA changes and whether these predictions can guide sequence design. Across eight tasks built on five experimental datasets, we find that model choice and how representations are accessed both affect performance. Linear readouts fitted to frozen representations can match or exceed models' native outputs, and functio",
+   "date": "2026-11-02",
+   "authors": "Andreas Bjerregaard",
+   "category": "q-bio.GN",
+   "version": null,
+   "matched_terms": [
+    "dna language model",
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "BEND",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "arxiv:2611.00241",
+   "source": "arxiv",
+   "doi": null,
+   "url": "https://arxiv.org/abs/2611.00241v1",
+   "title": "IsoAlign: Isoform-Aware DNA-Protein Alignment via Joint-Embedding Predictive Architectures",
+   "abstract": "Genomic foundation models (GFMs) have emerged as a powerful paradigm for learning DNA sequence representations, yet existing self-supervised pretraining strategies overlook alternative splicing and underperform compared to specialized models. To address this gap, we introduce IsoAlign, a multimodal framework that grounds genomic pretraining in isoform-aware DNA-protein alignment to learn biologically meaningful representations. IsoAlign aligns transcripts to their corresponding protein isoforms, capturing both coding sequences and broader regulatory contexts, using two Joint-Embedding Predicti",
+   "date": "2026-10-30",
+   "authors": "Niousha Sadjadi",
+   "category": "cs.LG",
+   "version": null,
+   "matched_terms": [
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "IsoAlign",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "arxiv:2610.41046",
+   "source": "arxiv",
+   "doi": null,
+   "url": "https://arxiv.org/abs/2610.41046v1",
+   "title": "Localizing predictive concepts encoded in neural representations via hierarchical testing",
+   "abstract": "Understanding which regulatory sequence motifs a genomic deep learning model has learned, with statistical error guarantees, is essential for trusting its use in downstream tasks such as variant effect prediction. Existing approaches to identifying which units in a trained network encode human- understandable concepts fall into two groups. Exploratory methods rank and visualize units but offer no statistical guarantee that the selected units are associated with the prediction target across the population of inputs. Testing-based methods test only single units or one pre-defined set of them, an",
+   "date": "2026-10-29",
+   "authors": "Viktoriia Huryn",
+   "category": "cs.LG",
+   "version": null,
+   "matched_terms": [
+    "genomic deep learning model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "arxiv:2610.39415",
+   "source": "arxiv",
+   "doi": null,
+   "url": "https://arxiv.org/abs/2610.39415v1",
+   "title": "Accuracy is not compatibility: two Evo 2 checkpoints hinge on one FP8 matrix multiplication",
+   "abstract": "FP8 formats specify how values are stored, not how products are summed; this gap can break checkpoints. Evo 2, a DNA language model, documents a Hopper FP8 requirement for its 1B and 40B checkpoints. On two Blackwell (sm_120) GPUs both fail the developers' forward test (the 7B passes); on an RTX 5070 Ti the 40B's next-base accuracy is 25.7%, near guessing. Greater accuracy breaks them, as BioNeMo saw for the 40B on Hopper: natively, 99.996% of one projection's outputs are correctly rounded (H100: about 30%), and fp32 accumulation of the same operands fails. Our H100 FP8 GEMM emulator, mmaemu (",
+   "date": "2026-10-29",
+   "authors": "Xun Ding",
+   "category": "cs.LG",
+   "version": null,
+   "matched_terms": [
+    "dna language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.22.760916",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.22.760916",
+   "url": "https://doi.org/10.64898/2026.10.22.760916",
+   "title": "Reconstructing human gene regulatory evolution using deep learning",
+   "abstract": "Understanding the genetic changes that drove the evolution of human-specific traits is a central goal in biology. Changes in gene expression are thought to be a major source of phenotypic innovations, but identifying the underlying changes in cis-regulatory elements (CREs) along the human lineage has been difficult: functional data from great apes are scarce and unobtainable for extinct hominins, and pinpointing causal substitutions requires knowing which sequences determine CRE activity. Here, we used AlphaGenome, a sequence-to-function deep-learning model, to predict the cis-regulatory effec",
+   "date": "2026-10-23",
+   "authors": "Yamada, T.",
+   "category": "evolutionary biology",
+   "version": "1",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.21.760802",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.21.760802",
+   "url": "https://doi.org/10.64898/2026.10.21.760802",
+   "title": "Systematic mapping of the prokaryotic noncoding sequence space with a genomic language model",
+   "abstract": "Prokaryotic genomes encode a vast repertoire of noncoding elements such as ribozymes, riboswitches, and CRISPR RNAs. The sequence-level diversity of these intergenic elements precludes alignment-based clustering that would enable annotation and discovery of novel noncoding RNA families. Here, we show that a genomic language model fine-tuned on prokaryotic intergenic sequences learns representations of noncoding elements from DNA sequence. We used these embeddings to organize 376 million intergenic regions from 1.3 terabase pairs of prokaryotic genomes and metagenomes into 5.14 million clusters",
+   "date": "2026-10-22",
+   "authors": "Sun, G.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "genomic language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.19.760276",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.19.760276",
+   "url": "https://doi.org/10.64898/2026.10.19.760276",
+   "title": "A genomic foundation model for interpreting human genetic diversity",
+   "abstract": "Interpreting human genomes requires models that recognize shared biological functions while accounting for variation underlying traits, disease susceptibility and adaptation. Here we present hEVO, a genomic foundation model trained on 4.784 billion distinct haplotype sequences reconstructed from whole genome sequencing (WGS) data for 63,809 individuals selected from 550,237 samples across eight cohorts. Pretraining integrates shared sequence features and naturally occurring allelic differences without clinical or functional labels. Against representatives of the Evo 2, NT, GPN and other genomi",
+   "date": "2026-10-21",
+   "authors": "Xu, Q.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "hEVO",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.07.07.736993",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.07.07.736993",
+   "url": "https://doi.org/10.64898/2026.07.07.736993",
+   "title": "Metagenomic contextualization of proteins with state space models",
+   "abstract": "Genomic foundation models have emerged as powerful tools for learning representations of biological sequences, but existing approaches predominantly rely on Transformer architectures, whose quadratic attention complexity limits their ability to capture long-range genomic context. This limitation is particularly relevant for metagenomics, where sequencing data have increased more than 500-fold since 2011, generating increasingly large and diverse datasets. For example, gLM2, a Transformer-based mixed-modality genomic language model, was trained with a context window of 4,096 tokens, limiting it",
+   "date": "2026-10-21",
+   "authors": "Azbijari, N.",
+   "category": "bioinformatics",
+   "version": "2",
+   "matched_terms": [
+    "genomic foundation model",
+    "genomic language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.19.760026",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.19.760026",
+   "url": "https://doi.org/10.64898/2026.10.19.760026",
+   "title": "Predicting cell-state-specific gene regulation from DNA across species",
+   "abstract": "DNA encodes the cell's phenotype, but the same DNA sequence is interpreted differently in every cell type, developmental stage, and activity state. Existing deep-learning models solve only half of this puzzle: sequence-to-function models read DNA but treat cell state as a fixed label, while single-cell foundation models represent cell state but not sequence. We developed Bolero, a sequence-to-function model whose parameters condition on atlas-scale cell-state embeddings and additional biological variables to predict cell-state-specific chromatin accessibility and transcript abundance from DNA.",
+   "date": "2026-10-20",
+   "authors": "Liu, H.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.13.758880",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.13.758880",
+   "url": "https://doi.org/10.64898/2026.10.13.758880",
+   "title": "Genomic foundation models do not yet boost common variant discovery beyond standard functional annotations",
+   "abstract": "Genomic foundation models (GFMs) use large-scale AI to model genetic sequences and their influence on molecular phenotypes. While GFMs have shown promise in rare variant analysis, their utility for common variant discovery remains untested. Using the surrogate functional false discovery rate framework for functionally informed GWAS discovery, we compared standard functional annotations (baselineLD) with annotations derived from three leading GFMs: the sequence-to-function models AlphaGenome and Borzoi, and the genomic language model GPN-Star. Across 27 UK Biobank traits, GPN-Star decreased loc",
+   "date": "2026-10-19",
+   "authors": "Bass, A. J.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "genomic foundation model",
+    "genomic language model",
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.1101/2025.06.05.658079",
+   "source": "biorxiv",
+   "doi": "10.1101/2025.06.05.658079",
+   "url": "https://doi.org/10.1101/2025.06.05.658079",
+   "title": "Comprehensive molecular impact mapping of common and rare variants at GWAS loci",
+   "abstract": "Deep learning sequence to function models can predict the molecular effects of genetic variants, but their predictions are limited to the cell types and assays they are trained on. Here we describe DNACipher, a deep learning model that predicts the effects of genetic variants across diverse biological contexts-including those not directly measured. DNACipher takes 524 kb of genome sequence as input and predicts variant effects across 38,582 cell type/assay combinations, > 6 times as many contexts as AlphaGenome. We also introduce DNACipher Deep Variant Impact Mapping, a method to prioritize va",
+   "date": "2026-10-19",
+   "authors": "Balderson, B.",
+   "category": "genetics",
+   "version": "2",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "DNACipher",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.13.758170",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.13.758170",
+   "url": "https://doi.org/10.64898/2026.10.13.758170",
+   "title": "DeepD enables efficient genome modeling and controllable long-context sequence generation across domains of life",
+   "abstract": "Genome foundation models hold great potential for advancing biological research, but modeling diverse complex genomes and generating controllable genome-scale sequences remain challenging. We present DeepD, a phylogeny-informed sparse mixture-of-experts model operating at single-nucleotide resolution over a 1-million-token context while reducing active computation. Pretrained on unselected whole-genome sequences across all domains of life, DeepD learns genic and intergenic sequence features and supports broad sequence-to-function prediction across species. DeepD performs well in human protein ",
+   "date": "2026-10-18",
+   "authors": "Lai, J.",
+   "category": "bioinformatics",
+   "version": "1",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "DeepD",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "arxiv:2611.05401",
+   "source": "arxiv",
+   "doi": null,
+   "url": "https://arxiv.org/abs/2611.05401v1",
+   "title": "A Training-Free Socket for DNA in Frozen Language Models",
+   "abstract": "Connecting a DNA foundation model to a large language model (LLM) usually requires training a connector, and often the LLM too. We show that a closed-form map is enough for gene-level questions. Our method, the socket, fits one ridge regression (the plug) from frozen Evo 2 features to the host LLM's own representation of the gene's symbol, name, and description at an early layer. The plug's output replaces the hidden state at placeholder positions, and no gradient passes through the host. We test it on GeneHop, a five-way multiple-choice benchmark split by homology. In a single run on the held",
+   "date": "2026-10-16",
+   "authors": "Arash Fatehi",
+   "category": "q-bio.GN",
+   "version": null,
+   "matched_terms": [
+    "dna foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.14.759213",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.14.759213",
+   "url": "https://doi.org/10.64898/2026.10.14.759213",
+   "title": "GEMS (GWAS Effect Mechanisms via Sequence-to-Function): Unveiling cell type-specific mechanisms for GWAS variants",
+   "abstract": "Genome-wide association studies (GWAS) have linked thousands of loci to common diseases, yet for non-coding variants, which constitute the vast majority of the signal, the cell types and states through which individual risk variants act remain largely unknown. Here, we develop GEMS (GWAS Effect Mechanisms via Sequence-to-Function), a framework that trains supervised classifiers on multimodal variant effect predictions (ATAC-seq and RNA-seq) from the sequence-to-function model Borzoi and applies SHAP-based attribution to associate individual GWAS variants with the cell types most relevant to th",
+   "date": "2026-10-16",
+   "authors": "Xie, X.",
+   "category": "genetics",
+   "version": "1",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.07.757259",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.07.757259",
+   "url": "https://doi.org/10.64898/2026.10.07.757259",
+   "title": "DNA-LLM2Vec: Architecture-Aware Task-Conditioned Adaptation of Decoder DNA Foundation Models",
+   "abstract": "Decoder DNA foundation models pretrain with dense next-token prediction and scale to long sequences, but their representations are directional. This is a poor fit for genomic tasks that need sequence context both upstream and downstream of a locus. Bidirectional masked-language-model encoders supply this context, but they pretrain more sparsely and scale less easily to long windows. We introduce DNA-LLM2Vec, a staged decoder-to-encoder framework that opens bidirectional context, repairs the resulting mismatch with masked next-token prediction, and applies contrastive views encoding strand and ",
+   "date": "2026-10-14",
+   "authors": "Liang, Y.",
+   "category": "bioinformatics",
+   "version": "1",
+   "matched_terms": [
+    "dna foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "DNA-LLM2Vec",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.12.758580",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.12.758580",
+   "url": "https://doi.org/10.64898/2026.10.12.758580",
+   "title": "A high-resolution protein-RNA binding atlas for structure-aware interaction prediction and post-transcriptional regulatory modeling",
+   "abstract": "RNA-binding proteins (RBPs) control post-transcriptional gene expression by regulating RNA processing, localization, stability, and translation. However, our understanding of RNA regulation remains limited by the resolution, scale, and uniformity of available RBP binding maps. Here we introduce eclair CLIP (ecCLIP), a high-throughput CLIP-seq platform that combines endogenous protein tagging for uniform affinity capture with ligation-free library preparation to generate high-resolution RNA-protein binding profiles. We applied ecCLIP to 67 endogenously tagged RBPs in HEK293T cells, generating a",
+   "date": "2026-10-13",
+   "authors": "Karimzadeh, M.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.08.14.744988",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.08.14.744988",
+   "url": "https://doi.org/10.64898/2026.08.14.744988",
+   "title": "Response representation shapes AlphaGenome enhancer-gene prediction in human astrocytes",
+   "abstract": "Background: Sequence-to-function models predict regulatory perturbation responses, but their added value beyond established enhancer-gene predictors and across prediction tasks remains unclear. We evaluated whole-enhancer deletion and sparse variant responses in human astrocytes. Results: We analyzed 2,307 CRISPR-interference-tested relations, including 133 expression-decreasing hits. Adding deletion responses increased fully nested EGrf average precision from 0.5475 to 0.6137. The paired increment was 0.0662 (enhancer-cluster 95% interval 0.0144-0.1181). In a separate exploratory analysis, sp",
+   "date": "2026-10-13",
+   "authors": "Huang, Z.",
+   "category": "genomics",
+   "version": "2",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [
+    "alphagenome"
+   ],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.03.05.709928",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.03.05.709928",
+   "url": "https://doi.org/10.64898/2026.03.05.709928",
+   "title": "REMAG: recovery of eukaryotic genomes from metagenomic data using non-contrastive self-supervised learning",
+   "abstract": "Metagenome-assembled genomes (MAGs) are central to exploring microbial communities. Yet, despite the relevance of protists and fungi to diverse ecosystems, eukaryotic MAG recovery lags behind that of prokaryotes. A major bottleneck is that most state-of-the-art binning pipelines exclusively rely on prokaryotic single-copy core gene reference databases and are optimized for smaller genomes. To address this gap, we present REMAG (Recovery of Eukaryotic MAGs), a tool designed to recover high-quality eukaryotic genomes suited for long-read metagenomic data. REMAG uses a fine-tuned HyenaDNA genomic",
+   "date": "2026-10-13",
+   "authors": "Gomez-Perez, D.",
+   "category": "bioinformatics",
+   "version": "3",
+   "matched_terms": [
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "REMAG",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.10.757278",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.10.757278",
+   "url": "https://doi.org/10.64898/2026.10.10.757278",
+   "title": "Alignment-Aware Genomic Coordinate Encoding for Long-Range DNA Modeling",
+   "abstract": "Existing genomic foundation models (GFMs) are adept at capturing local, sequential dependencies in DNA. However, their architectures often struggle to efficiently model gene regulation features, such as sparse motifs and distal regulatory elements that operate beyond linear proximity. Moreover, standard positional encodings fail to fully exploit the reference genome coordinate system. Therefore, we present USM-AA, an alignment-aware genomic foundation model that incorporates reference genome coordinates through a non-contiguous positional encoding, Alignment-Aware Rotary Position Embedding, an",
+   "date": "2026-10-12",
+   "authors": "Yang, X.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "USM-AA",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "arxiv:2610.15711",
+   "source": "arxiv",
+   "doi": null,
+   "url": "https://arxiv.org/abs/2610.15711v1",
+   "title": "What DNA Foundation Models Learn Beyond Sequence Composition",
+   "abstract": "Do genomic foundation models (FMs) provide predictive information beyond simple sequence composition? We evaluate frozen representations from five DNA FMs against normalized k-mer frequencies across 57 genomic classification datasets and two exploratory gene-expression regression tasks. Simple k-mer features remain competitive with most models, whereas NTv3 shows a consistent advantage; the ranking is robust to globally fixed and multi-scale k-mer baselines and alternative downstream probes. To test incremental predictive utility directly, we compare global 6-mer features with their concatenat",
+   "date": "2026-10-11",
+   "authors": "Vincenzo Yuto Civale",
+   "category": "cs.LG",
+   "version": null,
+   "matched_terms": [
+    "dna foundation model",
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "arxiv:2610.15396",
+   "source": "arxiv",
+   "doi": null,
+   "url": "https://arxiv.org/abs/2610.15396v1",
+   "title": "Training-Data Extraction from Genomic Language Models",
+   "abstract": "Genomic language models generate long nucleotide continuations from short prefixes, exposing a direct route for studying training-sequence extraction through the generation interface. We present an output-only black-box attack on Evo 2 that selects convergent groups of repeated generations without gradients, token likelihoods, or training-corpus access during candidate selection. Recovered content is then scored by an evaluator combining aligned length, nucleotide identity, match multiplicity, and sequence complexity. Across 304 runs on Evo 2 7B with bacteriophage and plasmid prefixes, the att",
+   "date": "2026-10-11",
+   "authors": "Tianhao Mao",
+   "category": "cs.CR",
+   "version": null,
+   "matched_terms": [
+    "genomic language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.06.757139",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.06.757139",
+   "url": "https://doi.org/10.64898/2026.10.06.757139",
+   "title": "GLARE: Genomic Language model for Automated Repetitive Element classification",
+   "abstract": "Reliable classification of transposable elements (TEs) is important for genome annotation and evolutionary analysis, yet remains challenging: TE families differ widely across taxa, reference databases label them inconsistently, and many TEs are represented only by degraded copies. We introduce GLARE (Genomic Language model for Automated Repetitive Element classification), a TE classifier built by fine-tuning a genomic language model on harmonized PanTEon and Repbase reference data to predict TE superfamily across 32 superfamilies in 11 orders. Among the genomic language models compared, Nucleo",
+   "date": "2026-10-11",
+   "authors": "Haas, N.",
+   "category": "bioinformatics",
+   "version": "1",
+   "matched_terms": [
+    "genomic language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "GLARE",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.09.02.749017",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.09.02.749017",
+   "url": "https://doi.org/10.64898/2026.09.02.749017",
+   "title": "EvSpark: Lossless Speculative Decoding for Hybrid DNA Foundation Models",
+   "abstract": "Hybrid DNA foundation models combine convolutional, recurrent, and attention layers, making speculative decoding more difficult than truncating a KV cache. We present EvSpark, a speculative decoding system for Evo2 that verifies draft blocks in parallel and restores all three classes of inference state by selecting retained intermediate states, without replay. A compact, hidden-state-conditioned drafter proposes each block in one parallel forward pass. On Evo2 7B, a 48-prompt benchmark with three training seeds yields a 2.96-fold speedup on 43 real-sequence prompts and a 3.27-fold speedup incl",
+   "date": "2026-10-11",
+   "authors": "Ding, H.",
+   "category": "bioinformatics",
+   "version": "4",
+   "matched_terms": [
+    "dna foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "EvSpark",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.08.757734",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.08.757734",
+   "url": "https://doi.org/10.64898/2026.10.08.757734",
+   "title": "Gene-level evolutionary conservation and human constraint decline at comparable rates across the age of onset of Mendelian disease",
+   "abstract": "Background Gene-level constraint and conservation scores are widely used to prioritise disease genes and to benchmark genomic language models. Purifying selection acts weakly on phenotypes manifesting after reproduction, so these scores are expected to carry less information about late-onset disease. An onset-dependent gradient has been demonstrated for human allele frequencies but not for the gene-level scores used in practice. Results We built an age-of-onset axis for 2,885 Mendelian diseases from Orphanet and fitted cross-species conservation (241-way phyloP) and human-population constraint",
+   "date": "2026-10-10",
+   "authors": "Mahaboob Ali, A. A.",
+   "category": "genetics",
+   "version": "1",
+   "matched_terms": [
+    "genomic language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.08.757645",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.08.757645",
+   "url": "https://doi.org/10.64898/2026.10.08.757645",
+   "title": "Directed evolution of a thermostable family-A DNA polymerase into a reverse transcriptase for 2'-modified RNA",
+   "abstract": "RNA-based therapeutics increasingly rely on nuclease-resistant xeno-nucleic acids (XNAs), but engineering polymerases capable of reading and amplifying these non-canonical substrates remains a major challenge. Natural DNA polymerases cannot process C2' sugar modifications, and the complete structural determinants governing this limitation remain poorly understood, limiting rational design strategies. In this study, we apply directed evolution methods to Thermus thermophilus DNA polymerase using a microfluidic implementation of the Compartmentalized Self-Replication (CSR). We identify an engine",
+   "date": "2026-10-09",
+   "authors": "Vincent, E.",
+   "category": "synthetic biology",
+   "version": "1",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.08.756856",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.08.756856",
+   "url": "https://doi.org/10.64898/2026.10.08.756856",
+   "title": "Systematic mapping of enhancers, silencers, and topological elements with prime editing deletion screens",
+   "abstract": "Noncoding regulatory elements in the human genome can control gene expression through distinct mechanisms, including acting as enhancers, silencers, or topological elements. However, we lack tools to identify all such classes systematically and quantify their effects on gene expression in an endogenous genomic context. Here we develop Swap-seq, a method that combines pooled twin prime editing with flow-sorting to delete hundreds of endogenous regulatory sequences and measure their quantitative effects on the expression of a nearby gene. We apply Swap-seq to dissect the regulatory elements that",
+   "date": "2026-10-09",
+   "authors": "Cai, X. S.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.07.757366",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.07.757366",
+   "url": "https://doi.org/10.64898/2026.10.07.757366",
+   "title": "Fine-tuning genomic models on rare splicing events identifies a novel biomarker of TDP-43 pathology",
+   "abstract": "Genomic foundation models (GFMs) are pretrained on large genomic datasets, but their ability to predict rare disease-associated events after fine-tuning remains unclear. We tested this using TDP-43 cryptic exons, well characterized splicing events linked to neurodegenerative disease that are poorly represented in standard annotations. We compared the state-of-the-art GFM AlphaGenome with OpenSpliceAI, a specialized splice site prediction model. Fine-tuned OpenSpliceAI detected held-out cryptic exons in human and mouse and captured allele-specific splicing effects at the disease-associated UNC1",
+   "date": "2026-10-09",
+   "authors": "Martin-Linares, C. P.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.02.756377",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.02.756377",
+   "url": "https://doi.org/10.64898/2026.10.02.756377",
+   "title": "Cerberus: bidirectional state space blocks improve accuracy and efficiency of regulatory sequence models",
+   "abstract": "Sequence-to-function models predict regulatory activity and variant effects from DNA sequence alone, and leading models such as Borzoi compute long-range interactions with self-attention. The reference genome caps unique training sequences, and new assays add labels, not sequences. This constraint favors architectures that learn more from limited sequence diversity. We compared long-range blocks with the rest of the architecture and the training data held fixed, replacing Borzoi's transformer blocks with Hydra, a bidirectional state space block built on Mamba-2. Hydra blocks ran 5.7-fold faste",
+   "date": "2026-10-09",
+   "authors": "Kelley, D. R.",
+   "category": "genomics",
+   "version": "1",
+   "matched_terms": [
+    "regulatory sequence model",
+    "from dna sequence alone",
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.02.756289",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.02.756289",
+   "url": "https://doi.org/10.64898/2026.10.02.756289",
+   "title": "Probing Genomic Foundation Models with Splice-Variant Perturbations",
+   "abstract": "As benchmarks saturate, traditional validation methods fail to capture the probabilistic representations of genomic foundation models. This study probes self-supervised generalists (NTv3 650M, Evo2 40B, Genos 10B) alongside task-specific specialists (SpliceAI, AlphaGenome, Borzoi) using a mechanistically focused paradigm centered on expert-curated single-nucleotide substitutions within the splicing regions of the exon-rich OPA1 gene. Extending this analysis across the broader corpus of OPA1 mutations, variants of uncertain significance (VUS), and an independent 65-gene dataset of spliceogenic ",
+   "date": "2026-10-09",
+   "authors": "Alavi, M. V.",
+   "category": "bioinformatics",
+   "version": "1",
+   "matched_terms": [
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "arxiv:2610.11761",
+   "source": "arxiv",
+   "doi": null,
+   "url": "https://arxiv.org/abs/2610.11761v1",
+   "title": "RAGenome: Scaling Retrieval-Based Genomic Language Models to Long Contexts",
+   "abstract": "The genome holds the blueprint that governs the biological properties of the cell. Consequently, advancing our knowledge of genomic function is crucial both for a broader understanding of biology and for continued biomedical advances. The success of large language models on natural language and protein sequences has motivated similar efforts on genomic data. However, standard genomic language models (gLMs) often require extremely large computational resources and still fall behind traditional methods on some downstream tasks. Recently, MSA-based pretraining has been proposed as an efficient al",
+   "date": "2026-10-08",
+   "authors": "Frederikke Isa Marin",
+   "category": "cs.LG",
+   "version": null,
+   "matched_terms": [
+    "genomic language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "RAGenome",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.01.756075",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.01.756075",
+   "url": "https://doi.org/10.64898/2026.10.01.756075",
+   "title": "REFinder: Mining new enzymes from metagenomes",
+   "abstract": "Microbial metagenomes encode vast catalytic diversity, but recovering enzymes of novel, yet-undescribed functionality typically requires whole-community assembly plus a means of identifying active proteins ab initio. The first step of the task is compute-intensive and misses low-abundance sequences. The second is complicated by our inability to predict novel functions. REBEAN, our DNA language model, sidesteps the latter by assigning each sequencing read a high-level Enzyme Commission (EC) class or a non-enzyme label without alignment. Here we build REFinder, a pipeline that addresses both ste",
+   "date": "2026-10-08",
+   "authors": "Prabakaran, R.",
+   "category": "bioinformatics",
+   "version": "1",
+   "matched_terms": [
+    "dna language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "REFinder",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.09.28.754897",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.09.28.754897",
+   "url": "https://doi.org/10.64898/2026.09.28.754897",
+   "title": "RASTRO: Branching Point Decision-Making in Unitig Graphs",
+   "abstract": "Motivation: De novo genome assembly relies on accurate path selection through complex graphs, yet unitig graph branching points remain a major ambiguity source. Multiple extensions may be equally plausible from topology alone, but sequence-level consistency of competing paths remains largely unexplored. Model: We introduce RASTRO, a reference-free framework for scoring candidate paths at unitig branching points using nucleotide sequence information. RASTRO-S employs a sample-specific n-gram model to estimate extension plausibility via bits-per-base surprisal, while RASTRO-L uses the Evo2 pretr",
+   "date": "2026-10-08",
+   "authors": "Behtari, S.",
+   "category": "bioinformatics",
+   "version": "2",
+   "matched_terms": [
+    "dna language model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "RASTRO",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.05.23.727431",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.05.23.727431",
+   "url": "https://doi.org/10.64898/2026.05.23.727431",
+   "title": "gRely: Relyability for genome trained sequence-to-expression models",
+   "abstract": "Sequence-to-function (S2F) models predict molecular phenotypes from DNA sequence and are increasingly applied to variant effect prediction (VEP), where the goal is to quantify how genetic variants alter gene expression. However, S2F model predictions are not uniformly reliable: accuracy varies substantially across variants, genes, and tissues, and current practice relies on crude magnitude thresholding to enrich for trustworthy predictions, which discards the majority of variants where S2F models could still provide signal. We developed gRely, a meta-modeling framework that estimates the proba",
+   "date": "2026-10-08",
+   "authors": "Rafi, A. M.",
+   "category": "genomics",
+   "version": "2",
+   "matched_terms": [
+    "sequence to expression",
+    "sequence to function"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "gRely",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.1101/2025.11.18.689171",
+   "source": "biorxiv",
+   "doi": "10.1101/2025.11.18.689171",
+   "url": "https://doi.org/10.1101/2025.11.18.689171",
+   "title": "Evo2HiC: a multimodal foundation model for integrative analysis of genome sequence and architecture",
+   "abstract": "Understanding how genome sequences shape three-dimensional (3D) genome architecture is fundamental to interpreting diverse biological processes. Although previous studies have shown that sequence information can predict 3D genome architecture, these models fall short in capturing cell type-specific structures because they are trained solely on sequence inputs. The widely available Hi-C data, which contains rich structural information across biosamples, can provide complementary features to sequence data for studying cell type-specific architectures. Recently, DNA foundation models have demonst",
+   "date": "2026-10-08",
+   "authors": "Fang, T.",
+   "category": "bioinformatics",
+   "version": "2",
+   "matched_terms": [
+    "dna foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": "Evo2HiC",
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  },
+  {
+   "key": "10.64898/2026.10.01.756029",
+   "source": "biorxiv",
+   "doi": "10.64898/2026.10.01.756029",
+   "url": "https://doi.org/10.64898/2026.10.01.756029",
+   "title": "Limitations of Genomic Foundation Models for Decoding Regulatory Mechanisms in ALS",
+   "abstract": "Genomic foundation models promise to infer regulatory consequences of genetic variants directly from DNA sequence, but how well these predictions translate to clinical utility remains unclear. To probe this question, we evaluate AlphaGenome (AG) for understanding amyotrophic lateral sclerosis (ALS) genetics without any disease-specific fine-tuning across three settings of increasing difficulty: recovering measured variant effects, reconstructing a known splicing mechanism, and generating de novo regulatory hypotheses at unresolved loci. At population scale, AG failed to recover measured effect",
+   "date": "2026-10-07",
+   "authors": "Talukder, A.",
+   "category": "bioinformatics",
+   "version": "1",
+   "matched_terms": [
+    "genomic foundation model"
+   ],
+   "matches_tracked_model": [],
+   "guessed_name": null,
+   "first_seen": "2026-11-05",
+   "status": "new",
+   "schema": 1
+  }
+ ],
+ "updated": "2026-11-05",
+ "counts": {
+  "new": 35
+ }
+}

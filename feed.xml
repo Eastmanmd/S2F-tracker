@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Sequence-to-Function Model Tracker — weekly changes</title>
+  <subtitle>What moved in the sequence-to-function model field this week: new models, rank changes, repositories going quiet, and new benchmarking papers.</subtitle>
+  <id>tag:eastmanmd.github.io,2026-11-05:s2f-tracker</id>
+  <updated>2026-11-05T06:00:00Z</updated>
+  <link rel="alternate" type="text/html" href="https://eastmanmd.github.io/S2F-tracker/"/>
+  <link rel="self" type="application/atom+xml" href="https://eastmanmd.github.io/S2F-tracker/feed.xml"/>
+  <author><name>Ali Eastman Oku</name></author>
+  <entry>
+    <title>Change tracking begins</title>
+    <id>tag:eastmanmd.github.io,2026-11-05:s2f-tracker/changelog/2026-11-05</id>
+    <updated>2026-11-05T06:00:00Z</updated>
+    <link rel="alternate" type="text/html" href="https://eastmanmd.github.io/S2F-tracker/"/>
+    <content type="html">&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Tracking begins&lt;/strong&gt; — Change tracking starts here: 30 models and 17,656 citations on record. From the next refresh this entry lists what moved.&lt;/li&gt;&lt;/ul&gt;</content>
+  </entry>
+</feed>

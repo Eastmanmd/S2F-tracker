@@ -1,0 +1,52 @@
+name: Weekly S2F refresh
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # Mondays 06:00 UTC
+  workflow_dispatch: {}    # allow manual runs from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Restore pipeline cache
+        uses: actions/cache@v4
+        with:
+          path: cache
+          key: pipeline-cache-${{ github.run_id }}
+          restore-keys: pipeline-cache-
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run pipeline
+        env:
+          # Raises the GitHub API limit from 60/hr to 5000/hr. A full run makes
+          # ~135 GitHub calls, so without it runnability would go unmeasured.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENALEX_MAILTO: ${{ vars.OPENALEX_MAILTO }}
+          # Optional: enables cursor paging; without it the pipeline pages by number.
+          OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
+        run: python pipeline/run_all.py
+
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # feed.xml is generated output at the repo root (a feed URL has to be
+          # stable and short). pipeline/discovery_queue.json is the review queue:
+          # discover.py appends to it and it must be committed, because cache/
+          # is gitignored and a dismissal has to outlive the cache.
+          git add data/ feed.xml pipeline/discovery_queue.json
+          git diff --cached --quiet || git commit -m "Weekly refresh $(date -u +%F)"
+          git push

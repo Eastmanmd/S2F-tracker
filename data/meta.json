@@ -1,0 +1,49 @@
+{
+ "updated": "2026-11-05",
+ "models_tracked": 30,
+ "total_citations": 17656,
+ "open_weights": 23,
+ "class_counts": {
+  "core": 17,
+  "derivative": 3,
+  "dna-lm": 7,
+  "splicing": 2,
+  "mpra": 1
+ },
+ "actively_maintained": 6,
+ "weights": {
+  "attention": 0.35,
+  "momentum": 0.25,
+  "usage": 0.2,
+  "openness": 0.1,
+  "runnable": 0.1
+ },
+ "momentum_basis": "citations dated in the trailing 365 days",
+ "momentum_window_days": 365,
+ "history_depth": 1,
+ "use_totals": {
+  "benchmark": 810,
+  "application": 12694,
+  "review": 3392,
+  "extension": 760
+ },
+ "domain_totals": {
+  "offtopic": 748,
+  "method": 4363,
+  "unclear": 2546,
+  "biology": 2356
+ },
+ "biology_share": 0.351,
+ "unique_citing_works": 10013,
+ "citing_index_per_model": 40,
+ "citing_records_total": 17656,
+ "sources": [
+  "OpenAlex",
+  "GitHub",
+  "Hugging Face Hub",
+  "PyPI (pypistats.org)",
+  "Zenodo",
+  "Kaggle"
+ ],
+ "usage_basis": "GitHub stars plus downloads per month: Hugging Face 30-day, PyPI last month, Zenodo lifetime monthly average"
+}

@@ -1,0 +1,14 @@
+{
+ "_comment": [
+  "Hand-labelled ground truth for the domain classifier, keyed by OpenAlex work id.",
+  "EMPTY ON PURPOSE: the scFM labels do not transfer -- they are single-cell papers.",
+  "Fill this by reading titles and abstracts of S2F citing papers (aim for ~100,",
+  "with a deliberate share of biology papers, since biology is the minority class).",
+  "Leave genuinely ambiguous papers out rather than guessing.",
+  "",
+  "Then run: python3 pipeline/validate_classifier.py --errors",
+  "",
+  "domain: method | biology | offtopic"
+ ],
+ "labels": {}
+}

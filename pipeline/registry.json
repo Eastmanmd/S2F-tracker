@@ -1,0 +1,1152 @@
+{
+  "_comment": [
+    "Curated registry of sequence-to-function (S2F) models. This is the one file",
+    "maintained by hand; everything in data/ is generated from it.",
+    "",
+    "Identity",
+    "  id         - stable slug; never change once published (URLs and history key on it).",
+    "  class      - core | derivative | dna-lm | splicing | mpra. Only core and",
+    "               derivative show by default; the rest sit behind the gray-zone toggle.",
+    "  parent     - id of the model this one was built from (architecture or weights),",
+    "               or null. Drives the lineage view. Must name another id in this file.",
+    "  year       - year of first public release (preprint counts).",
+    "  papers     - EVERY version of the model paper (preprint AND journal). Citing works",
+    "               are unioned across versions and deduped by OpenAlex work id. Pin",
+    "               openalex_id when a title search cannot find a version.",
+    "",
+    "Where it lives (all optional; null or [] when absent)",
+    "  github      - owner/repo of the model's own code.",
+    "  github_also - extra repos for the same model (an API client beside research",
+    "                code). Their stars are summed into usage; runnability reads `github` only.",
+    "  github_path - set when the code is one folder of a shared monorepo",
+    "                (deepmind-research, calico/basenji for Akita). The pipeline then",
+    "                does NOT credit the repo's stars or issues to this model.",
+    "  hf          - Hugging Face model ids for the weights.",
+    "  weights     - other weight hosts: {host: kaggle|zenodo|gcs|api|website, id|url}.",
+    "                Kaggle and Zenodo report downloads; the others are recorded only.",
+    "  pypi        - PyPI package, only where auto-detection cannot confirm the link-back.",
+    "",
+    "Access",
+    "  access  - open | non-commercial | gated | api-only | none.",
+    "  license - SPDX id of the code license where known; otherwise a short slug",
+    "            (academic-research-only, Genentech-Non-Commercial-1.0). 'access' is the",
+    "            judgement the score uses; 'license' is the evidence for it.",
+    "",
+    "Shape of the model (what the genome-browser view draws)",
+    "  context_bp    - bp of DNA read per prediction (the right end of the track bar).",
+    "  output        - track (binned profile) | window (one value per input) |",
+    "                  gene (one value per gene) | contact_map | embedding.",
+    "  resolution_bp - output bin size in bp (left end of the bar). For window and gene",
+    "                  outputs leave null: the view draws a diamond at context_bp.",
+    "  n_tracks      - number of output tracks/targets, if the paper states it.",
+    "  readouts      - accessibility | tf_binding | histone | cage | tss | rna_seq |",
+    "                  expression | splicing | polyadenylation | contacts | mpra.",
+    "                  Empty for DNA language models (embeddings only).",
+    "  species       - species the released weights predict for (or 'multi').",
+    "",
+    "Leave a field null rather than guessing - nulls render as 'not reported'."
+  ],
+  "models": [
+    {
+      "id": "deepbind",
+      "name": "DeepBind",
+      "class": "core",
+      "parent": null,
+      "org": "Frey Lab, University of Toronto",
+      "year": 2015,
+      "papers": [
+        {
+          "title": "Predicting the sequence specificities of DNA- and RNA-binding proteins by deep learning",
+          "venue": "Nature Biotechnology"
+        }
+      ],
+      "github": null,
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [
+        {
+          "host": "website",
+          "url": "http://tools.genes.toronto.edu/deepbind/"
+        }
+      ],
+      "pypi": null,
+      "access": "open",
+      "license": null,
+      "context_bp": null,
+      "output": "window",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "tf_binding"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "One small CNN per protein, trained on PBM, SELEX and ChIP-seq. The root of sequence-to-binding deep learning."
+    },
+    {
+      "id": "deepsea",
+      "name": "DeepSEA",
+      "class": "core",
+      "parent": null,
+      "org": "Troyanskaya Lab, Princeton",
+      "year": 2015,
+      "papers": [
+        {
+          "title": "Predicting effects of noncoding variants with deep learning-based sequence model",
+          "venue": "Nature Methods"
+        }
+      ],
+      "github": null,
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [
+        {
+          "host": "website",
+          "url": "http://deepsea.princeton.edu/"
+        }
+      ],
+      "pypi": null,
+      "access": "open",
+      "license": null,
+      "context_bp": 1000,
+      "output": "window",
+      "resolution_bp": null,
+      "n_tracks": 919,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "First deep CNN to predict chromatin effects of noncoding variants from sequence alone."
+    },
+    {
+      "id": "basset",
+      "name": "Basset",
+      "class": "core",
+      "parent": null,
+      "org": "Kelley & Rinn, Harvard",
+      "year": 2016,
+      "papers": [
+        {
+          "title": "Basset: learning the regulatory code of the accessible genome with deep convolutional neural networks",
+          "venue": "Genome Research"
+        }
+      ],
+      "github": "davek44/Basset",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "MIT",
+      "context_bp": 600,
+      "output": "window",
+      "resolution_bp": null,
+      "n_tracks": 164,
+      "readouts": [
+        "accessibility"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "DNase hypersensitivity across 164 cell types; the start of the Kelley lineage."
+    },
+    {
+      "id": "basenji",
+      "name": "Basenji",
+      "class": "core",
+      "parent": "basset",
+      "org": "Calico",
+      "year": 2018,
+      "papers": [
+        {
+          "title": "Sequential regulatory activity prediction across chromosomes with convolutional neural networks",
+          "venue": "Genome Research"
+        }
+      ],
+      "github": "calico/basenji",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [
+        {
+          "host": "zenodo",
+          "id": "1466065"
+        }
+      ],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 131072,
+      "output": "track",
+      "resolution_bp": 128,
+      "n_tracks": 4229,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone",
+        "cage"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Dilated convolutions reach 131 kb and predict coverage in 128 bp bins."
+    },
+    {
+      "id": "expecto",
+      "name": "ExPecto",
+      "class": "core",
+      "parent": "deepsea",
+      "org": "Troyanskaya Lab, Princeton / Flatiron",
+      "year": 2018,
+      "papers": [
+        {
+          "title": "Deep learning sequence-based ab initio prediction of variant effects on expression and disease risk",
+          "venue": "Nature Genetics"
+        }
+      ],
+      "github": "FunctionLab/ExPecto",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [
+        {
+          "host": "zenodo",
+          "id": "1744798"
+        }
+      ],
+      "pypi": null,
+      "access": "open",
+      "license": null,
+      "context_bp": 40000,
+      "output": "gene",
+      "resolution_bp": null,
+      "n_tracks": 218,
+      "readouts": [
+        "expression"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Spatially pools DeepSEA-style chromatin features across 40 kb around the TSS to predict tissue expression. The repository ships no licence file."
+    },
+    {
+      "id": "xpresso",
+      "name": "Xpresso",
+      "class": "core",
+      "parent": null,
+      "org": "Shendure Lab, University of Washington",
+      "year": 2020,
+      "papers": [
+        {
+          "title": "Predicting mRNA Abundance Directly from Genomic Sequence Using Deep Convolutional Neural Networks",
+          "venue": "Cell Reports"
+        }
+      ],
+      "github": "vagarwal87/Xpresso",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "MIT",
+      "context_bp": 10500,
+      "output": "gene",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "expression"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Predicts steady-state mRNA level per gene from 10.5 kb around the TSS plus mRNA half-life features."
+    },
+    {
+      "id": "basenji2",
+      "name": "Basenji2",
+      "class": "core",
+      "parent": "basenji",
+      "org": "Calico",
+      "year": 2020,
+      "papers": [
+        {
+          "title": "Cross-species regulatory sequence activity prediction",
+          "venue": "PLOS Computational Biology"
+        }
+      ],
+      "github": "calico/basenji",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 131072,
+      "output": "track",
+      "resolution_bp": 128,
+      "n_tracks": 6956,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone",
+        "cage"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Joint human and mouse training; its 5,313 human + 1,643 mouse targets became Enformer's training set."
+    },
+    {
+      "id": "akita",
+      "name": "Akita",
+      "class": "core",
+      "parent": "basenji",
+      "org": "Pollard Lab, Gladstone / Calico",
+      "year": 2020,
+      "papers": [
+        {
+          "title": "Predicting 3D genome folding from DNA sequence with Akita",
+          "venue": "Nature Methods"
+        }
+      ],
+      "github": "calico/basenji",
+      "github_path": "manuscripts/akita",
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 1048576,
+      "output": "contact_map",
+      "resolution_bp": 2048,
+      "n_tracks": 5,
+      "readouts": [
+        "contacts"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Predicts Hi-C and Micro-C contact maps over ~1 Mb at 2 kb resolution."
+    },
+    {
+      "id": "enformer",
+      "name": "Enformer",
+      "class": "core",
+      "parent": "basenji2",
+      "org": "Google DeepMind / Calico",
+      "year": 2021,
+      "papers": [
+        {
+          "title": "Effective gene expression prediction from sequence by integrating long-range interactions",
+          "venue": "Nature Methods"
+        }
+      ],
+      "github": "google-deepmind/deepmind-research",
+      "github_path": "enformer",
+      "github_also": [],
+      "hf": [
+        "EleutherAI/enformer-official-rough"
+      ],
+      "weights": [
+        {
+          "host": "kaggle",
+          "id": "deepmind/enformer"
+        }
+      ],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 196608,
+      "output": "track",
+      "resolution_bp": 128,
+      "n_tracks": 6956,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone",
+        "cage"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Adds transformer attention to reach distal enhancers; the default baseline for most later work. The Hugging Face id is the PyTorch port of the official weights (enformer-pytorch)."
+    },
+    {
+      "id": "bpnet",
+      "name": "BPNet",
+      "class": "core",
+      "parent": null,
+      "org": "Kundaje Lab, Stanford / Zeitlinger Lab, Stowers",
+      "year": 2021,
+      "papers": [
+        {
+          "title": "Base-resolution models of transcription-factor binding reveal soft motif syntax",
+          "venue": "Nature Genetics"
+        }
+      ],
+      "github": "kundajelab/bpnet",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "MIT",
+      "context_bp": 1000,
+      "output": "track",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [
+        "tf_binding"
+      ],
+      "species": [
+        "mouse"
+      ],
+      "notes": "Base-resolution ChIP-nexus profiles of pluripotency TFs; built to read motif syntax."
+    },
+    {
+      "id": "sei",
+      "name": "Sei",
+      "class": "core",
+      "parent": "deepsea",
+      "org": "Troyanskaya Lab, Princeton / Flatiron",
+      "year": 2022,
+      "papers": [
+        {
+          "title": "A sequence-based global map of regulatory activity for deciphering human genetics",
+          "venue": "Nature Genetics"
+        }
+      ],
+      "github": "FunctionLab/sei-framework",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "non-commercial",
+      "license": "academic-research-only",
+      "context_bp": 4096,
+      "output": "window",
+      "resolution_bp": null,
+      "n_tracks": 21907,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Groups 21,907 chromatin profiles into 40 sequence classes for variant interpretation."
+    },
+    {
+      "id": "orca",
+      "name": "Orca",
+      "class": "core",
+      "parent": null,
+      "org": "Zhou Lab, UT Southwestern",
+      "year": 2022,
+      "papers": [
+        {
+          "title": "Sequence-based modeling of three-dimensional genome architecture from kilobase to chromosome scale",
+          "venue": "Nature Genetics"
+        }
+      ],
+      "github": "jzhoulab/orca",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "non-commercial",
+      "license": "academic-research-only",
+      "context_bp": 256000000,
+      "output": "contact_map",
+      "resolution_bp": 4000,
+      "n_tracks": null,
+      "readouts": [
+        "contacts"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Multiscale 3D genome prediction from 1 Mb up to 256 Mb windows."
+    },
+    {
+      "id": "scbasset",
+      "name": "scBasset",
+      "class": "core",
+      "parent": "basset",
+      "org": "Calico",
+      "year": 2022,
+      "papers": [
+        {
+          "title": "scBasset: sequence-based modeling of single-cell ATAC-seq using convolutional neural networks",
+          "venue": "Nature Methods"
+        }
+      ],
+      "github": "calico/scBasset",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 1344,
+      "output": "window",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "accessibility"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Predicts single-cell ATAC accessibility in every cell from the peak sequence."
+    },
+    {
+      "id": "borzoi",
+      "name": "Borzoi",
+      "class": "core",
+      "parent": "enformer",
+      "org": "Calico",
+      "year": 2023,
+      "papers": [
+        {
+          "title": "Predicting RNA-seq coverage from DNA sequence as a unifying model of gene regulation",
+          "venue": "Nature Genetics"
+        }
+      ],
+      "github": "calico/borzoi",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "johahi/borzoi-replicate-0",
+        "johahi/borzoi-replicate-1",
+        "johahi/borzoi-replicate-2",
+        "johahi/borzoi-replicate-3"
+      ],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 524288,
+      "output": "track",
+      "resolution_bp": 32,
+      "n_tracks": null,
+      "readouts": [
+        "rna_seq",
+        "accessibility",
+        "tf_binding",
+        "histone",
+        "cage",
+        "splicing",
+        "polyadenylation"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Predicts RNA-seq coverage at 32 bp, so one model covers transcription, splicing and polyadenylation. The Hugging Face ids are the PyTorch port of the official weights (johahi/borzoi-pytorch)."
+    },
+    {
+      "id": "puffin",
+      "name": "Puffin",
+      "class": "core",
+      "parent": null,
+      "org": "Zhou Lab, UT Southwestern",
+      "year": 2024,
+      "papers": [
+        {
+          "title": "Sequence basis of transcription initiation in the human genome",
+          "venue": "Science"
+        }
+      ],
+      "github": "jzhoulab/puffin",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "non-commercial",
+      "license": "academic-research-only",
+      "context_bp": null,
+      "output": "track",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [
+        "tss"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Interpretable model of transcription initiation built from a small set of learned motifs and their position effects."
+    },
+    {
+      "id": "chrombpnet",
+      "name": "ChromBPNet",
+      "class": "core",
+      "parent": "bpnet",
+      "org": "Kundaje Lab, Stanford",
+      "year": 2024,
+      "papers": [
+        {
+          "title": "ChromBPNet: bias factorized, base-resolution deep learning models of chromatin accessibility reveal cis-regulatory sequence syntax, transcription factor footprints and regulatory variants",
+          "venue": "bioRxiv"
+        }
+      ],
+      "github": "kundajelab/chrombpnet",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [
+        {
+          "host": "zenodo",
+          "id": "7422964"
+        }
+      ],
+      "pypi": "chrombpnet",
+      "access": "open",
+      "license": "MIT",
+      "context_bp": 2114,
+      "output": "track",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [
+        "accessibility"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Base-resolution ATAC/DNase profiles with the enzyme sequence bias modelled out by a separate network."
+    },
+    {
+      "id": "flashzoi",
+      "name": "Flashzoi",
+      "class": "derivative",
+      "parent": "borzoi",
+      "org": "Gagneur Lab, TU Munich",
+      "year": 2024,
+      "papers": [
+        {
+          "title": "Flashzoi: an enhanced Borzoi for accelerated genomic analysis",
+          "venue": "Bioinformatics"
+        }
+      ],
+      "github": "johahi/borzoi-pytorch",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "johahi/flashzoi-replicate-0",
+        "johahi/flashzoi-replicate-1",
+        "johahi/flashzoi-replicate-2",
+        "johahi/flashzoi-replicate-3"
+      ],
+      "weights": [
+        {
+          "host": "zenodo",
+          "id": "15669912"
+        }
+      ],
+      "pypi": "borzoi-pytorch",
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 524288,
+      "output": "track",
+      "resolution_bp": 32,
+      "n_tracks": null,
+      "readouts": [
+        "rna_seq",
+        "accessibility",
+        "tf_binding",
+        "histone",
+        "cage",
+        "splicing",
+        "polyadenylation"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Borzoi retrained with rotary embeddings and FlashAttention for faster inference."
+    },
+    {
+      "id": "scooby",
+      "name": "scooby",
+      "class": "derivative",
+      "parent": "borzoi",
+      "org": "Gagneur Lab, TU Munich",
+      "year": 2024,
+      "papers": [
+        {
+          "title": "scooby: modeling multimodal genomic profiles from DNA sequence at single-cell resolution",
+          "venue": "Nature Methods"
+        }
+      ],
+      "github": "gagneurlab/scooby",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [
+        {
+          "host": "zenodo",
+          "id": "13891692"
+        },
+        {
+          "host": "zenodo",
+          "id": "15517071"
+        }
+      ],
+      "pypi": null,
+      "access": "open",
+      "license": "MIT",
+      "context_bp": 524288,
+      "output": "track",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "rna_seq",
+        "accessibility"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Fine-tunes Borzoi to predict single-cell RNA and ATAC coverage per cell from sequence. PyPI's 'scooby' is an unrelated package; the link-back check rejects it."
+    },
+    {
+      "id": "decima",
+      "name": "Decima",
+      "class": "derivative",
+      "parent": "borzoi",
+      "org": "Genentech",
+      "year": 2024,
+      "papers": [
+        {
+          "title": "Decoding sequence determinants of gene expression in diverse cellular and disease states",
+          "venue": "Nature Methods"
+        }
+      ],
+      "github": "Genentech/decima",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "non-commercial",
+      "license": "Genentech-Non-Commercial-1.0",
+      "context_bp": null,
+      "output": "gene",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "expression"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Fine-tunes Borzoi on single-cell pseudobulk data to predict cell-type-specific gene expression."
+    },
+    {
+      "id": "alphagenome",
+      "name": "AlphaGenome",
+      "class": "core",
+      "parent": "enformer",
+      "org": "Google DeepMind",
+      "year": 2025,
+      "papers": [
+        {
+          "title": "Advancing regulatory variant effect prediction with AlphaGenome",
+          "venue": "Nature"
+        }
+      ],
+      "github": "google-deepmind/alphagenome",
+      "github_path": null,
+      "github_also": [
+        "google-deepmind/alphagenome_research"
+      ],
+      "hf": [
+        "google/alphagenome-all-folds"
+      ],
+      "weights": [
+        {
+          "host": "api",
+          "url": "https://deepmind.google.com/science/alphagenome"
+        }
+      ],
+      "pypi": "alphagenome",
+      "access": "gated",
+      "license": "Apache-2.0",
+      "context_bp": 1048576,
+      "output": "track",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone",
+        "cage",
+        "rna_seq",
+        "splicing",
+        "polyadenylation",
+        "contacts"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Reads 1 Mb at base resolution across every major readout, including splice junctions and contact maps. Served through an API; weights released in 2026 behind a gated Hugging Face licence."
+    },
+    {
+      "id": "spliceai",
+      "name": "SpliceAI",
+      "class": "splicing",
+      "parent": null,
+      "org": "Illumina",
+      "year": 2019,
+      "papers": [
+        {
+          "title": "Predicting Splicing from Primary Sequence with Deep Learning",
+          "venue": "Cell"
+        }
+      ],
+      "github": "Illumina/SpliceAI",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": "spliceai",
+      "access": "non-commercial",
+      "license": "PolyForm-Strict-1.0.0",
+      "context_bp": 10000,
+      "output": "track",
+      "resolution_bp": 1,
+      "n_tracks": 3,
+      "readouts": [
+        "splicing"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Calls splice donors and acceptors at single-base resolution from 10 kb of flanking sequence. Repository archived by Illumina; models are CC BY-NC 4.0."
+    },
+    {
+      "id": "pangolin",
+      "name": "Pangolin",
+      "class": "splicing",
+      "parent": "spliceai",
+      "org": "Li Lab, Stanford",
+      "year": 2022,
+      "papers": [
+        {
+          "title": "Predicting RNA splicing from DNA sequence using Pangolin",
+          "venue": "Genome Biology"
+        }
+      ],
+      "github": "tkzeng/Pangolin",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "GPL-3.0",
+      "context_bp": 10000,
+      "output": "track",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [
+        "splicing"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "SpliceAI-style architecture trained on splice-site usage across four species and tissues."
+    },
+    {
+      "id": "malinois",
+      "name": "Malinois",
+      "class": "mpra",
+      "parent": null,
+      "org": "Sabeti Lab, Broad / Tewhey Lab, JAX",
+      "year": 2024,
+      "papers": [
+        {
+          "title": "Machine-guided design of cell-type-targeting cis-regulatory elements",
+          "venue": "Nature"
+        }
+      ],
+      "github": "sjgosai/boda2",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "AGPL-3.0",
+      "context_bp": 600,
+      "output": "window",
+      "resolution_bp": null,
+      "n_tracks": 3,
+      "readouts": [
+        "mpra"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Predicts MPRA activity in K562, HepG2 and SK-N-SH; used to design cell-type-specific synthetic enhancers."
+    },
+    {
+      "id": "dnabert",
+      "name": "DNABERT",
+      "class": "dna-lm",
+      "parent": null,
+      "org": "Davuluri Lab, Northwestern",
+      "year": 2021,
+      "papers": [
+        {
+          "title": "DNABERT: pre-trained Bidirectional Encoder Representations from Transformers model for DNA-language in genome",
+          "venue": "Bioinformatics"
+        }
+      ],
+      "github": "jerryji1993/DNABERT",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 512,
+      "output": "embedding",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [],
+      "species": [
+        "human"
+      ],
+      "notes": "BERT over overlapping k-mers of the human genome; the first widely used DNA language model."
+    },
+    {
+      "id": "dnabert2",
+      "name": "DNABERT-2",
+      "class": "dna-lm",
+      "parent": "dnabert",
+      "org": "Liu Lab, Northwestern",
+      "year": 2023,
+      "papers": [
+        {
+          "title": "DNABERT-2: Efficient Foundation Model and Benchmark For Multi-Species Genome",
+          "venue": "ICLR"
+        }
+      ],
+      "github": "MAGICS-LAB/DNABERT_2",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "zhihan1996/DNABERT-2-117M"
+      ],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": null,
+      "output": "embedding",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [],
+      "species": [
+        "multi"
+      ],
+      "notes": "Replaces k-mers with byte-pair tokens and trains across 135 species."
+    },
+    {
+      "id": "nucleotide-transformer",
+      "name": "Nucleotide Transformer",
+      "class": "dna-lm",
+      "parent": null,
+      "org": "InstaDeep",
+      "year": 2023,
+      "papers": [
+        {
+          "title": "The Nucleotide Transformer: Building and Evaluating Robust Foundation Models for Human Genomics",
+          "venue": "Nature Methods"
+        }
+      ],
+      "github": "instadeepai/nucleotide-transformer",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "InstaDeepAI/nucleotide-transformer-v2-500m-multi-species"
+      ],
+      "weights": [],
+      "pypi": null,
+      "access": "non-commercial",
+      "license": "CC-BY-NC-SA-4.0",
+      "context_bp": 12000,
+      "output": "embedding",
+      "resolution_bp": 6,
+      "n_tracks": null,
+      "readouts": [],
+      "species": [
+        "multi"
+      ],
+      "notes": "Masked language models over 6-mer tokens, up to 2.5B parameters, pretrained on 850 genomes."
+    },
+    {
+      "id": "hyenadna",
+      "name": "HyenaDNA",
+      "class": "dna-lm",
+      "parent": null,
+      "org": "Hazy Research, Stanford",
+      "year": 2023,
+      "papers": [
+        {
+          "title": "HyenaDNA: Long-Range Genomic Sequence Modeling at Single Nucleotide Resolution",
+          "venue": "arXiv",
+          "openalex_id": "W4382603228"
+        },
+        {
+          "title": "HyenaDNA: Long-Range Genomic Sequence Modeling at Single Nucleotide Resolution",
+          "venue": "NeurIPS",
+          "openalex_id": "W7133235585"
+        }
+      ],
+      "github": "HazyResearch/hyena-dna",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "LongSafari/hyenadna-large-1m-seqlen-hf"
+      ],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 1000000,
+      "output": "embedding",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [],
+      "species": [
+        "human"
+      ],
+      "notes": "Long-convolution language model with single-nucleotide tokens over up to 1 Mb."
+    },
+    {
+      "id": "caduceus",
+      "name": "Caduceus",
+      "class": "dna-lm",
+      "parent": null,
+      "org": "Kuleshov Lab, Cornell",
+      "year": 2024,
+      "papers": [
+        {
+          "title": "Caduceus: Bi-Directional Equivariant Long-Range DNA Sequence Modeling",
+          "venue": "ICML"
+        }
+      ],
+      "github": "kuleshov-group/caduceus",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "kuleshov-group/caduceus-ps_seqlen-131k_d_model-256_n_layer-16"
+      ],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 131072,
+      "output": "embedding",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [],
+      "species": [
+        "human"
+      ],
+      "notes": "Bidirectional, reverse-complement-equivariant Mamba language model over 131 kb."
+    },
+    {
+      "id": "gpn-msa",
+      "name": "GPN-MSA",
+      "class": "dna-lm",
+      "parent": null,
+      "org": "Song Lab, UC Berkeley",
+      "year": 2023,
+      "papers": [
+        {
+          "title": "A DNA language model based on multispecies alignment predicts the effects of genome-wide variants",
+          "venue": "Nature Biotechnology"
+        }
+      ],
+      "github": "songlab-cal/gpn",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "songlab/gpn-msa-sapiens"
+      ],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "MIT",
+      "context_bp": 128,
+      "output": "embedding",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [],
+      "species": [
+        "human"
+      ],
+      "notes": "Language model over a 100-vertebrate alignment; scores variant effects zero-shot."
+    },
+    {
+      "id": "evo2",
+      "name": "Evo 2",
+      "class": "dna-lm",
+      "parent": null,
+      "org": "Arc Institute",
+      "year": 2025,
+      "papers": [
+        {
+          "title": "Genome modeling and design across all domains of life with Evo 2",
+          "venue": "bioRxiv"
+        }
+      ],
+      "github": "ArcInstitute/evo2",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "arcinstitute/evo2_7b"
+      ],
+      "weights": [],
+      "pypi": "evo2",
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 1000000,
+      "output": "embedding",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [],
+      "species": [
+        "multi"
+      ],
+      "notes": "StripedHyena 2 language model (7B and 40B) trained on genomes from all domains of life."
+    }
+  ]
+}

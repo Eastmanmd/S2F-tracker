@@ -1,0 +1,670 @@
+<title>S2F Tracker Mockups</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Work+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout concept: three candidate UIs behind one switcher bar.
+   A = genome-browser tracks on a log bp ruler (dark slate),
+   B = field-guide plates + lineage tree (cool herbarium paper),
+   C = keyboard-driven terminal workstation (amber on umber).
+   Each mockup deliberately commits to one look, so there are no light/dark pairs;
+   every color is set explicitly per view. */
+:root{
+  color-scheme: dark;
+  /* A · genome browser */
+  --a-deep:#0a0e14; --a-bg:#0f141b; --a-panel:#141b25; --a-raise:#1a2330; --a-line:#263244; --a-grid:#1a2230;
+  --a-ink:#dce4ee; --a-ink2:#93a3b8; --a-dim:#64738a; --a-hi:#f2c66d; --a-sel:#1b2738;
+  /* B · field guide */
+  --b-bg:#e4e9e2; --b-paper:#f3f6f1; --b-ink:#16231c; --b-ink2:#485a50; --b-dim:#76867c; --b-rule:#c3cdc2;
+  --b-accent:#2b5a86; --b-derive:#8c5a2c;
+  /* C · terminal */
+  --c-bg:#13110d; --c-pane:#1a1712; --c-line:#3a3329; --c-ink:#eadfca; --c-dim:#8f846f; --c-faint:#4b4337;
+  --c-amb:#f0a53a; --c-sel:#2c251a; --c-good:#a5c97f; --c-bad:#e0806a;
+  /* readout palette, shared so the data encoding stays constant across mockups */
+  --r-access:#3fb68b; --r-tf:#5b8def; --r-histone:#e2a33a; --r-cage:#e5625a; --r-rna:#b67ee0;
+  --r-expr:#e089b4; --r-splice:#36bfc9; --r-contact:#a8b45a; --r-mpra:#c8a479;
+  /* nucleotides, for the A logo */
+  --nt-a:#3fb68b; --nt-c:#5b8def; --nt-g:#e2a33a; --nt-t:#e5625a;
+  --f-plex:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --f-plexm:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --f-serif:"Instrument Serif","Iowan Old Style",Georgia,serif;
+  --f-work:"Work Sans","Helvetica Neue",Arial,sans-serif;
+  --f-jet:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--a-bg);color:var(--a-ink);font-family:var(--f-plex);-webkit-font-smoothing:antialiased}
+body.v-browser{background:var(--a-bg);color:var(--a-ink);--sw-bg:var(--a-deep);--sw-line:var(--a-line);--sw-ink:var(--a-ink2);--sw-acc:var(--a-hi);--sw-on:var(--a-deep);--fv:var(--a-hi)}
+body.v-guide{background:var(--b-bg);color:var(--b-ink);--sw-bg:var(--b-ink);--sw-line:#2c3b33;--sw-ink:#c9d3cb;--sw-acc:var(--b-paper);--sw-on:var(--b-ink);--fv:var(--b-accent)}
+body.v-terminal{background:var(--c-bg);color:var(--c-ink);--sw-bg:#0d0b08;--sw-line:var(--c-line);--sw-ink:var(--c-dim);--sw-acc:var(--c-amb);--sw-on:#0d0b08;--fv:var(--c-amb)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:40;background:var(--sw-bg)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+:focus-visible{outline:2px solid var(--fv);outline-offset:2px}
+.wrap{max-width:1440px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* ---------- switcher ---------- */
+.sw{position:sticky;top:env(safe-area-inset-top,0px);z-index:35;background:var(--sw-bg);border-bottom:1px solid var(--sw-line);color:var(--sw-ink);font:12px/1.3 var(--f-plexm)}
+.sw .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding-block:8px}
+.sw-title{letter-spacing:.06em;text-transform:uppercase;font-size:11px}
+.sw-tabs{display:flex;flex-wrap:wrap;gap:6px}
+.sw-tab{color:inherit;text-decoration:none;padding:5px 10px;border:1px solid var(--sw-line);border-radius:3px;white-space:nowrap}
+.sw-tab b{font-weight:600;margin-right:6px}
+.sw-tab[aria-current="page"]{background:var(--sw-acc);color:var(--sw-on);border-color:var(--sw-acc)}
+.sw-note{margin-left:auto;font-size:11px;opacity:.8}
+@media (max-width:760px){.sw-note{margin-left:0;flex-basis:100%}}
+
+/* =========================================================
+   A · GENOME BROWSER
+   ========================================================= */
+.va{padding-bottom:48px}
+.a-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding-block:14px;border-bottom:1px solid var(--a-line)}
+.a-brand{display:flex;align-items:center;gap:9px;font:600 15px var(--f-plexm);letter-spacing:.02em;color:var(--a-ink)}
+.a-brand small{font-weight:400;color:var(--a-dim)}
+.a-logo{display:grid;grid-template-columns:repeat(4,4px);gap:2px;height:18px;align-items:end}
+.a-logo i{display:block;border-radius:1px}
+.a-search{flex:1 1 260px;min-width:0;display:flex;align-items:center;gap:6px;background:var(--a-panel);border:1px solid var(--a-line);border-radius:4px;padding:0 10px}
+.a-search:focus-within{border-color:var(--a-hi)}
+.a-search span{font:12px var(--f-plexm);color:var(--a-dim)}
+.a-search input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--a-ink);font:13px var(--f-plexm);padding:8px 0}
+.a-search input::placeholder{color:var(--a-dim)}
+.a-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.a-ctl > span{font:11px var(--f-plexm);color:var(--a-dim);text-transform:uppercase;letter-spacing:.08em}
+.a-seg{display:inline-flex;border:1px solid var(--a-line);border-radius:4px;overflow:hidden}
+.a-seg button{padding:6px 10px;font:12px var(--f-plexm);color:var(--a-ink2)}
+.a-seg button + button{border-left:1px solid var(--a-line)}
+.a-seg button[aria-pressed="true"]{background:var(--a-raise);color:var(--a-ink)}
+.a-toggle{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--a-line);border-radius:4px;font:12px var(--f-plexm);color:var(--a-ink2)}
+.a-toggle i{width:24px;height:12px;border-radius:6px;background:var(--a-line);position:relative}
+.a-toggle i::after{content:"";position:absolute;top:2px;left:2px;width:8px;height:8px;border-radius:50%;background:var(--a-ink2);transition:left .15s}
+.a-toggle[aria-pressed="true"]{color:var(--a-ink)}
+.a-toggle[aria-pressed="true"] i{background:var(--a-hi)}
+.a-toggle[aria-pressed="true"] i::after{left:14px;background:var(--a-deep)}
+.a-chips{display:flex;flex-wrap:wrap;gap:6px;padding-block:12px 4px}
+.a-chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--a-line);border-radius:999px;font:12px var(--f-plex);color:var(--a-ink2)}
+.a-chip i{width:8px;height:8px;border-radius:2px;background:var(--c)}
+.a-chip[aria-pressed="true"]{color:var(--a-ink);border-color:var(--c);background:color-mix(in srgb,var(--c) 18%,transparent)}
+.a-status{display:flex;flex-wrap:wrap;gap:4px 20px;padding-block:8px 12px;font:12px/1.5 var(--f-plexm);color:var(--a-dim)}
+.a-status b{color:var(--a-ink2);font-weight:500}
+.a-intro{flex-basis:100%;font:13px/1.55 var(--f-plex);color:var(--a-ink2);max-width:90ch}
+.a-grid{position:relative;border:1px solid var(--a-line);border-radius:6px;background:var(--a-panel);overflow:clip}
+.a-head,.a-row{display:grid;grid-template-columns:250px minmax(0,1fr) 172px}
+.a-head{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--swh,40px));z-index:5;background:var(--a-panel);border-bottom:1px solid var(--a-line)}
+.a-hcell{padding:10px 12px;font:11px var(--f-plexm);color:var(--a-dim);text-transform:uppercase;letter-spacing:.08em;align-self:end}
+.a-hs{border-left:1px solid var(--a-grid)}
+.a-trk{padding-inline:22px;min-width:0}
+.a-in{position:relative;height:100%;min-height:46px;background-image:linear-gradient(to right,var(--a-grid) 1px,transparent 1px);background-size:calc(100% / 8.4771) 100%}
+.a-ruler{min-height:38px;background-image:none}
+.tk{position:absolute;bottom:0;width:1px;height:5px;background:var(--a-line)}
+.tk.maj{height:10px;background:var(--a-ink2)}
+.tl{position:absolute;bottom:13px;transform:translateX(-50%);font:11px var(--f-plexm);color:var(--a-ink2);white-space:nowrap}
+.a-row{border-bottom:1px solid var(--a-grid);cursor:pointer}
+.a-row:last-of-type{border-bottom:0}
+.a-row:hover{background:var(--a-raise)}
+.a-row[aria-selected="true"]{background:var(--a-sel);box-shadow:inset 3px 0 0 var(--a-hi)}
+.a-lab{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:2px 8px;align-items:center;padding:9px 12px}
+.a-rank{grid-row:1 / span 2;font:11px var(--f-plexm);color:var(--a-dim)}
+.a-name{font:600 14px var(--f-plex);color:var(--a-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-meta{grid-column:2;font:11px var(--f-plex);color:var(--a-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.a-tag{font:500 10px var(--f-plexm);color:var(--a-hi);text-transform:uppercase;letter-spacing:.06em;margin-left:6px}
+.a-score{grid-column:3;grid-row:1 / span 2;display:grid;justify-items:end;gap:4px;font:600 15px var(--f-plexm);color:var(--a-ink);font-variant-numeric:tabular-nums}
+.a-meter{width:38px;height:3px;background:var(--a-line);border-radius:2px;overflow:hidden}
+.a-meter i{display:block;height:100%;background:var(--a-hi)}
+.a-bar{position:absolute;top:50%;transform:translateY(-50%);height:16px;min-width:3px;display:flex;flex-direction:column;gap:1px;border-radius:2px;overflow:hidden}
+.a-bar span{flex:1;background:var(--c)}
+.a-bar.lm{background:repeating-linear-gradient(135deg,var(--a-ink2) 0 1.5px,transparent 1.5px 6px);border:1px solid var(--a-ink2)}
+.a-dot{position:absolute;top:50%;width:11px;height:11px;transform:translate(-50%,-50%) rotate(45deg);background:var(--c);border:1px solid var(--a-deep)}
+.a-bl{position:absolute;top:50%;transform:translateY(-50%);padding-left:9px;font:11px var(--f-plexm);color:var(--a-ink2);white-space:nowrap;pointer-events:none}
+.a-bl.dot{padding-left:12px}
+.a-bl.flip{transform:translate(-100%,-50%);padding-left:0;padding-right:9px}
+.a-sp{display:flex;align-items:center;gap:10px;padding:6px 12px;border-left:1px solid var(--a-grid);font:12px var(--f-plexm);font-variant-numeric:tabular-nums;color:var(--a-ink)}
+.a-sp small{display:block;color:var(--a-dim);font-size:10px;white-space:nowrap}
+.a-x{position:absolute;top:0;bottom:0;width:1px;background:var(--a-hi);pointer-events:none;z-index:6;opacity:.85}
+.a-tip{position:absolute;z-index:7;pointer-events:none;background:var(--a-deep);border:1px solid var(--a-hi);border-radius:4px;padding:7px 9px;font:11px/1.5 var(--f-plexm);color:var(--a-ink2);white-space:nowrap}
+.a-tip b{color:var(--a-hi);font-weight:600}
+.a-empty{padding:28px 16px;font:13px var(--f-plexm);color:var(--a-dim)}
+.a-legend{display:flex;flex-wrap:wrap;gap:8px 22px;padding-block:14px;font:12px var(--f-plex);color:var(--a-ink2)}
+.a-legend span{display:inline-flex;align-items:center;gap:8px}
+.lg-bar{width:34px;height:10px;border-radius:2px;background:linear-gradient(var(--r-access) 0 33%,var(--r-tf) 33% 66%,var(--r-cage) 66%)}
+.lg-dot{width:9px;height:9px;transform:rotate(45deg);background:var(--r-access)}
+.lg-lm{width:34px;height:10px;border:1px solid var(--a-ink2);background:repeating-linear-gradient(135deg,var(--a-ink2) 0 1.5px,transparent 1.5px 6px)}
+/* drawer */
+.a-drawer{position:fixed;top:0;right:0;bottom:0;z-index:45;width:min(460px,100%);overflow:auto;background:var(--a-panel);border-left:1px solid var(--a-line);box-shadow:-24px 0 48px rgba(0,0,0,.35);
+  padding:calc(env(safe-area-inset-top,0px) + 18px) max(22px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 28px) 22px;
+  transform:translateX(100%);visibility:hidden;transition:transform .22s ease,visibility 0s linear .22s}
+.a-drawer.open{transform:none;visibility:visible;transition:transform .22s ease}
+.a-close{float:right;font:11px var(--f-plexm);color:var(--a-ink2);border:1px solid var(--a-line);border-radius:3px;padding:4px 8px}
+.a-eye{margin:0;font:11px var(--f-plexm);color:var(--a-hi);text-transform:uppercase;letter-spacing:.1em}
+.a-dname{margin:6px 0 2px;font:600 28px/1.1 var(--f-plex);color:var(--a-ink)}
+.a-dauth{margin:0;font:13px var(--f-plex);color:var(--a-ink2)}
+.a-dnote{margin:14px 0 0;font:14px/1.55 var(--f-plex);color:var(--a-ink);max-width:60ch}
+.a-dh{margin:22px 0 8px;font:11px var(--f-plexm);color:var(--a-dim);text-transform:uppercase;letter-spacing:.1em}
+.a-mini{position:relative;height:34px;border-bottom:1px solid var(--a-line);margin-top:16px}
+.a-mini .a-bar{height:12px}
+.a-mini .tl{bottom:auto;top:30px;transform:translateX(-50%);font-size:10px;color:var(--a-dim)}
+.a-mini .tk{bottom:-1px}
+.a-dl{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0;font:13px var(--f-plex)}
+.a-dl dt{color:var(--a-dim)}
+.a-dl dd{margin:0;color:var(--a-ink);font-family:var(--f-plexm);font-size:12.5px}
+.a-comp{display:grid;grid-template-columns:96px minmax(0,1fr) 40px;align-items:center;gap:10px;font:12px var(--f-plex);color:var(--a-ink2);margin-bottom:6px}
+.a-comp div{height:6px;background:var(--a-line);border-radius:3px;overflow:hidden}
+.a-comp div i{display:block;height:100%;background:var(--a-hi)}
+.a-comp b{font:500 12px var(--f-plexm);color:var(--a-ink);text-align:right}
+.a-lin{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font:12px var(--f-plexm);color:var(--a-dim)}
+.a-lin button{padding:4px 9px;border:1px solid var(--a-line);border-radius:3px;color:var(--a-ink)}
+.a-lin button:hover{border-color:var(--a-hi)}
+.a-lin .cur{padding:4px 9px;border-radius:3px;background:var(--a-hi);color:var(--a-deep)}
+.a-links{font:12px var(--f-plexm);color:var(--a-dim)}
+@media (max-width:820px){
+  .a-head,.a-row{grid-template-columns:minmax(0,1fr)}
+  .a-hl,.a-hs,.a-sp{display:none}
+  .a-lab{padding-bottom:0}
+  .tl.odd{display:none}
+  .a-trk{padding-inline:16px}
+}
+
+/* =========================================================
+   B · FIELD GUIDE
+   ========================================================= */
+.vb{font-family:var(--f-work);color:var(--b-ink);padding-bottom:56px}
+.b-mast{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px 48px;align-items:end;padding-block:44px 28px;border-bottom:1px solid var(--b-ink)}
+.b-eyebrow{margin:0 0 14px;font:500 12px var(--f-work);letter-spacing:.16em;text-transform:uppercase;color:var(--b-ink2)}
+.b-mast h1{margin:0;font:400 clamp(42px,6.4vw,84px)/.95 var(--f-serif);letter-spacing:-.015em;text-wrap:balance}
+.b-mast h1 em{font-style:italic}
+.b-lede{margin:0;font:15px/1.65 var(--f-work);color:var(--b-ink2);max-width:52ch}
+.b-key{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:16px 0 0;font-size:12.5px;color:var(--b-ink2)}
+.b-key dt{font-style:italic;font-family:var(--f-serif);font-size:16px;color:var(--b-ink)}
+.b-key dd{margin:0}
+.b-filters{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding-block:14px;border-bottom:1px solid var(--b-rule)}
+.b-fg{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.b-fg > span{font:500 11px var(--f-work);letter-spacing:.12em;text-transform:uppercase;color:var(--b-dim);margin-right:4px}
+.b-pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border:1px solid var(--b-rule);border-radius:2px;font:13px var(--f-work);color:var(--b-ink2);background:var(--b-paper)}
+.b-pill i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.b-pill[aria-pressed="true"]{background:var(--b-ink);color:var(--b-paper);border-color:var(--b-ink)}
+.b-search{flex:1 1 200px;min-width:0;padding:6px 10px;border:1px solid var(--b-rule);border-radius:2px;background:var(--b-paper);color:var(--b-ink);font:13px var(--f-work)}
+.b-search::placeholder{color:var(--b-dim)}
+.b-sec{padding-top:36px}
+.b-sh{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px;margin:0 0 14px}
+.b-sh h2{margin:0;font:400 34px/1 var(--f-serif)}
+.b-sh p{margin:0;font-size:13px;color:var(--b-ink2);max-width:70ch}
+.b-tree{overflow-x:auto;background:var(--b-paper);border:1px solid var(--b-rule)}
+.b-tree svg{display:block}
+.b-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(310px,100%),1fr));gap:18px}
+.b-plate{display:grid;gap:12px;align-content:start;background:var(--b-paper);border:1px solid var(--b-rule);padding:18px 18px 16px}
+.b-ptop{display:flex;justify-content:space-between;gap:10px;font:500 11px var(--f-work);letter-spacing:.14em;text-transform:uppercase;color:var(--b-dim)}
+.b-cls-derivative{color:var(--b-derive)}
+.b-cls-gray{color:var(--b-accent)}
+.b-name{margin:0;font:italic 400 40px/1 var(--f-serif);color:var(--b-ink)}
+.b-auth{margin:-4px 0 0;font-size:13px;color:var(--b-ink2)}
+.b-rf{position:relative;height:24px;border-bottom:1px solid var(--b-ink2)}
+.b-rf .tick{position:absolute;bottom:0;width:1px;height:5px;background:var(--b-dim)}
+.b-rf .tick.lab{height:9px;background:var(--b-ink2)}
+.b-rf .bar{position:absolute;bottom:5px;height:9px;min-width:3px;background:var(--b-accent)}
+.b-rf .bar.lm{background:repeating-linear-gradient(135deg,var(--b-accent) 0 1.5px,transparent 1.5px 5px);border:1px solid var(--b-accent)}
+.b-rf .dot{position:absolute;bottom:5px;width:9px;height:9px;transform:translateX(-50%) rotate(45deg);background:var(--b-accent)}
+.b-rfcap{display:flex;justify-content:space-between;gap:8px;margin:-6px 0 0;font-size:11.5px;color:var(--b-dim);font-variant-numeric:tabular-nums}
+.b-dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;margin:0;font-size:13px;font-variant-numeric:tabular-nums}
+.b-dl dt{color:var(--b-dim)}
+.b-dl dd{margin:0;color:var(--b-ink)}
+.b-ro{display:flex;flex-wrap:wrap;gap:6px}
+.b-ro span{display:inline-flex;align-items:center;gap:6px;padding:2px 8px 2px 6px;border:1px solid var(--b-rule);font-size:12px;color:var(--b-ink2)}
+.b-ro i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.b-note{margin:0;font:italic 18px/1.3 var(--f-serif);color:var(--b-ink2);text-wrap:pretty}
+.b-foot{display:flex;align-items:center;gap:14px;padding-top:12px;border-top:1px dashed var(--b-rule);font-size:12.5px;color:var(--b-ink2);font-variant-numeric:tabular-nums}
+.b-foot b{color:var(--b-ink);font-weight:600}
+.b-foot svg:last-child{margin-left:auto}
+.b-empty{padding:30px 0;font:italic 20px var(--f-serif);color:var(--b-ink2)}
+@media (max-width:820px){.b-mast{grid-template-columns:minmax(0,1fr);padding-block:28px 22px}}
+
+/* =========================================================
+   C · TERMINAL
+   ========================================================= */
+.vc{font:13px/1.5 var(--f-jet);color:var(--c-ink);padding-block:16px 40px}
+.c-app{border:1px solid var(--c-line);background:var(--c-pane)}
+.c-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 18px;padding:8px 12px;border-bottom:1px solid var(--c-line);color:var(--c-dim)}
+.c-top .p{color:var(--c-amb)}
+.c-cmdline{min-width:0;overflow-wrap:anywhere}
+.c-keys{display:flex;flex-wrap:wrap;gap:4px 12px}
+kbd{font:inherit;color:var(--c-ink);border:1px solid var(--c-line);border-bottom-width:2px;border-radius:3px;padding:0 5px;background:var(--c-bg)}
+.c-flags{display:flex;flex-wrap:wrap;gap:4px 16px;padding:6px 12px;border-bottom:1px solid var(--c-line);color:var(--c-dim)}
+.c-flag{color:var(--c-dim)}
+.c-flag[aria-pressed="true"]{color:var(--c-amb)}
+.c-flag:hover{color:var(--c-ink)}
+.c-main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+.c-list{overflow:auto;max-height:64vh;border-right:1px solid var(--c-line)}
+.c-t{border-collapse:collapse;width:100%;white-space:nowrap;font-variant-numeric:tabular-nums}
+.c-t th{position:sticky;top:0;background:var(--c-pane);color:var(--c-dim);font-weight:400;text-align:left;padding:6px 10px;border-bottom:1px solid var(--c-line)}
+.c-t td{padding:2px 10px;cursor:pointer}
+.c-t .n{text-align:right}
+.c-t tr:hover td{background:#211d16}
+.c-t tr.sel td{background:var(--c-sel);color:var(--c-amb)}
+.c-t td.ptr{width:1ch;padding-right:0;color:var(--c-amb)}
+.c-g{letter-spacing:.12em}
+.c-g .off{color:var(--c-faint)}
+.c-gray{color:var(--c-dim)}
+.c-detail{padding:12px 16px;overflow:auto;max-height:64vh;white-space:pre;line-height:1.6}
+.c-dim{color:var(--c-dim)}
+.c-amb{color:var(--c-amb)}
+.c-good{color:var(--c-good)}
+.c-h{color:var(--c-amb);font-weight:600}
+.c-bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);border-top:1px solid var(--c-line)}
+.c-pane{padding:10px 14px;white-space:pre;overflow-x:auto;min-width:0}
+.c-pane + .c-pane{border-left:1px solid var(--c-line)}
+.c-cmd{display:flex;align-items:center;gap:10px;padding:8px 12px;border-top:1px solid var(--c-line);background:var(--c-bg)}
+.c-cmd label{color:var(--c-amb)}
+.c-cmd input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:var(--c-ink);font:13px var(--f-jet);caret-color:var(--c-amb)}
+.c-cmd input::placeholder{color:var(--c-faint)}
+@media (max-width:900px){
+  .c-main,.c-bottom{grid-template-columns:minmax(0,1fr)}
+  .c-list{border-right:0;border-bottom:1px solid var(--c-line);max-height:46vh}
+  .c-pane + .c-pane{border-left:0;border-top:1px solid var(--c-line)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+
+<nav class="sw" id="sw" aria-label="Mockup switcher">
+  <div class="wrap">
+    <span class="sw-title">S2F Tracker · UI mockups</span>
+    <div class="sw-tabs">
+      <a class="sw-tab" href="#browser"><b>A</b>Genome browser</a>
+      <a class="sw-tab" href="#guide"><b>B</b>Field guide</a>
+      <a class="sw-tab" href="#terminal"><b>C</b>Terminal</a>
+    </div>
+    <span class="sw-note">Sample data: specs from the papers; scores and citations are placeholders</span>
+  </div>
+</nav>
+
+<!-- ================= A ================= -->
+<section id="v-browser" class="va" hidden>
+  <div class="wrap">
+    <div class="a-top">
+      <div class="a-brand"><span class="a-logo" aria-hidden="true"><i style="height:10px;background:var(--nt-a)"></i><i style="height:18px;background:var(--nt-c)"></i><i style="height:13px;background:var(--nt-g)"></i><i style="height:7px;background:var(--nt-t)"></i></span>s2f.tracker <small>v0 · human + mouse</small></div>
+      <label class="a-search"><span>goto:</span><input id="a-q" class="q" type="search" placeholder="model, lab or readout (try “Calico” or “splicing”)" autocomplete="off"></label>
+      <div class="a-ctl"><span>sort</span>
+        <div class="a-seg"><button data-sortv="score">score</button><button data-sortv="context">context</button><button data-sortv="resolution">resolution</button><button data-sortv="year">year</button></div>
+      </div>
+      <div class="a-ctl"><span>species</span>
+        <div class="a-seg"><button data-sp="all">all</button><button data-sp="human">human</button><button data-sp="mouse">mouse</button></div>
+      </div>
+      <button class="a-toggle" data-gray><i aria-hidden="true"></i>gray zone</button>
+    </div>
+    <div class="a-chips" id="a-chips"></div>
+    <div class="a-status" id="a-status"></div>
+    <div class="a-grid" id="a-grid"></div>
+    <div class="a-legend">
+      <span><i class="lg-bar"></i>bar runs from finest output resolution to full input window (log bp)</span>
+      <span><i class="lg-dot"></i>one prediction per input window</span>
+      <span><i class="lg-lm"></i>DNA language model: embeddings, no assay readouts</span>
+      <span>stripe colours = readouts predicted</span>
+    </div>
+  </div>
+  <aside class="a-drawer" id="a-drawer" aria-label="Model details" aria-hidden="true"></aside>
+</section>
+
+<!-- ================= B ================= -->
+<section id="v-guide" class="vb" hidden>
+  <div class="wrap">
+    <header class="b-mast">
+      <div>
+        <p class="b-eyebrow">Volume I · Human &amp; mouse · Revised weekly</p>
+        <h1>A Field Guide to <em>Sequence-to-Function</em> Models</h1>
+      </div>
+      <div>
+        <p class="b-lede">Every model that reads DNA and predicts what the genome does with it, catalogued like specimens: who described it, how far it sees, how finely it resolves, what it predicts, and whether anyone still uses it.</p>
+        <dl class="b-key">
+          <dt>Plate</dt><dd>numbered in order of first description</dd>
+          <dt>Range</dt><dd>input window and output resolution on a log bp scale</dd>
+          <dt>Lineage</dt><dd>which earlier model it was built from</dd>
+        </dl>
+      </div>
+    </header>
+    <div class="b-filters">
+      <div class="b-fg" id="b-ro"><span>Readout</span></div>
+      <div class="b-fg"><span>Species</span><button class="b-pill" data-sp="all">All</button><button class="b-pill" data-sp="human">Human</button><button class="b-pill" data-sp="mouse">Mouse</button></div>
+      <div class="b-fg"><span>Order</span><button class="b-pill" data-sortv="year">Chronological</button><button class="b-pill" data-sortv="score">Score</button><button class="b-pill" data-sortv="context">Range</button></div>
+      <div class="b-fg"><button class="b-pill" data-gray>Include DNA LMs, splicing &amp; MPRA</button></div>
+      <input class="b-search q" id="b-q" type="search" placeholder="Search the guide" autocomplete="off">
+    </div>
+    <section class="b-sec">
+      <div class="b-sh"><h2>Lineage</h2><p>Circles are sized by citations. Filled ink = core S2F, brown = derivative, open = gray zone. A line means the later model was built from the earlier one’s architecture or weights.</p></div>
+      <div class="b-tree" id="b-tree"></div>
+    </section>
+    <section class="b-sec">
+      <div class="b-sh"><h2>Plates</h2><p id="b-count"></p></div>
+      <div class="b-grid" id="b-grid"></div>
+    </section>
+  </div>
+</section>
+
+<!-- ================= C ================= -->
+<section id="v-terminal" class="vc" hidden>
+  <div class="wrap">
+    <div class="c-app">
+      <div class="c-top"><span class="c-cmdline" id="c-cmdline"></span>
+        <span class="c-keys"><span><kbd>/</kbd> filter</span><span><kbd>j</kbd><kbd>k</kbd> move</span><span><kbd>s</kbd> sort</span><span><kbd>g</kbd> gray zone</span><span><kbd>h</kbd><kbd>m</kbd><kbd>a</kbd> species</span><span><kbd>esc</kbd> clear</span></span>
+      </div>
+      <div class="c-flags" id="c-flags"></div>
+      <div class="c-main">
+        <div class="c-list" id="c-list"></div>
+        <div class="c-detail" id="c-detail" aria-live="polite"></div>
+      </div>
+      <div class="c-bottom">
+        <div class="c-pane" id="c-hist"></div>
+        <div class="c-pane" id="c-log"></div>
+      </div>
+      <div class="c-cmd"><label for="c-q">/</label><input id="c-q" class="q" type="text" placeholder="filter by name, lab, readout…   enter to return to the list" autocomplete="off" spellcheck="false"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ---------------- data (specs from papers; scores & citations are placeholders) ---------------- */
+const READ=[["access","Accessibility","A"],["tf","TF binding","T"],["histone","Histone marks","H"],["cage","CAGE / TSS","C"],["rna","RNA-seq coverage","R"],["expr","Gene expression","E"],["splice","Splicing","S"],["contact","3D contacts","3"],["mpra","MPRA activity","M"]];
+const RO=Object.fromEntries(READ.map(([k,l,g])=>[k,{k,l,g}]));
+const CLS={core:"Core S2F",derivative:"Derivative","dna-lm":"DNA language model",splicing:"Splicing",mpra:"MPRA"};
+const GRAY=new Set(["dna-lm","splicing","mpra"]);
+const ACC={open:"Open weights",api:"API access",nc:"Non-commercial weights"};
+const M=[
+ {id:"deepsea",name:"DeepSEA",year:2015,auth:"Zhou & Troyanskaya",org:"Princeton",cls:"core",parent:null,ctx:1000,res:1000,tracks:919,params:null,sp:["human"],ro:["access","tf","histone"],acc:"open",score:71,cites:3100,note:"The first deep CNN to predict the chromatin effects of noncoding variants from sequence alone."},
+ {id:"basset",name:"Basset",year:2016,auth:"Kelley et al.",org:"Harvard",cls:"core",parent:null,ctx:600,res:600,tracks:164,params:null,sp:["human"],ro:["access"],acc:"open",score:57,cites:1250,note:"Learned DNase hypersensitivity across 164 cell types and started the Kelley lineage."},
+ {id:"expecto",name:"ExPecto",year:2018,auth:"Zhou et al.",org:"Princeton / Flatiron",cls:"core",parent:"deepsea",ctx:40000,res:40000,tracks:218,params:null,sp:["human"],ro:["expr"],acc:"open",score:52,cites:820,note:"Stacks DeepSEA features across 40 kb to predict tissue-specific expression for each gene."},
+ {id:"basenji",name:"Basenji",year:2018,auth:"Kelley et al.",org:"Calico",cls:"core",parent:"basset",ctx:131072,res:128,tracks:4229,params:null,sp:["human","mouse"],ro:["access","tf","histone","cage"],acc:"open",score:69,cites:910,note:"Dilated convolutions stretched the window to 131 kb, with coverage predicted in 128 bp bins."},
+ {id:"spliceai",name:"SpliceAI",year:2019,auth:"Jaganathan et al.",org:"Illumina",cls:"splicing",parent:null,ctx:10000,res:1,tracks:3,params:null,sp:["human"],ro:["splice"],acc:"open",score:79,cites:2400,note:"Calls splice donors and acceptors at single-base resolution from 10 kb of flanking sequence."},
+ {id:"akita",name:"Akita",year:2020,auth:"Fudenberg et al.",org:"Gladstone",cls:"core",parent:"basenji",ctx:1048576,res:2048,tracks:5,params:null,sp:["human","mouse"],ro:["contact"],acc:"open",score:55,cites:400,note:"Predicts Hi-C and Micro-C contact maps over 1 Mb at 2 kb resolution."},
+ {id:"enformer",name:"Enformer",year:2021,auth:"Avsec et al.",org:"DeepMind / Calico",cls:"core",parent:"basenji",ctx:196608,res:128,tracks:6956,params:"251M",sp:["human","mouse"],ro:["access","tf","histone","cage"],acc:"open",score:88,cites:1500,note:"Added attention to reach distal enhancers and became the default baseline for later work."},
+ {id:"bpnet",name:"BPNet",year:2021,auth:"Avsec et al.",org:"Stanford / Stowers",cls:"core",parent:null,ctx:1000,res:1,tracks:8,params:null,sp:["mouse"],ro:["tf"],acc:"open",score:63,cites:700,note:"Base-resolution ChIP-nexus profiles, built for reading TF motif syntax rather than for scale."},
+ {id:"sei",name:"Sei",year:2022,auth:"Chen et al.",org:"Princeton / Flatiron",cls:"core",parent:"deepsea",ctx:4096,res:4096,tracks:21907,params:null,sp:["human"],ro:["access","tf","histone"],acc:"open",score:65,cites:450,note:"Groups 21,907 chromatin profiles into 40 sequence classes for variant interpretation."},
+ {id:"orca",name:"Orca",year:2022,auth:"Zhou",org:"UT Southwestern",cls:"core",parent:null,ctx:256000000,res:4000,tracks:2,params:null,sp:["human"],ro:["contact"],acc:"open",score:48,cites:200,note:"Multiscale 3D genome prediction from 1 Mb up to 256 Mb windows."},
+ {id:"scbasset",name:"scBasset",year:2022,auth:"Yuan & Kelley",org:"Calico",cls:"core",parent:"basset",ctx:1344,res:1344,tracks:null,params:null,sp:["human","mouse"],ro:["access"],acc:"open",score:57,cites:260,note:"Predicts single-cell ATAC accessibility in every cell from the peak sequence."},
+ {id:"hyenadna",name:"HyenaDNA",year:2023,auth:"Nguyen et al.",org:"Stanford",cls:"dna-lm",parent:null,ctx:1000000,res:1,tracks:null,params:"6.6M",sp:["human"],ro:[],acc:"open",score:62,cites:520,note:"Long-convolution DNA language model with single-nucleotide tokens over a million bases."},
+ {id:"nt",name:"Nucleotide Transformer",year:2023,auth:"Dalla-Torre et al.",org:"InstaDeep",cls:"dna-lm",parent:null,ctx:12000,res:6,tracks:null,params:"2.5B",sp:["multi"],ro:[],acc:"nc",score:73,cites:700,note:"Masked language model over 6-mer tokens, pretrained on 850 genomes."},
+ {id:"borzoi",name:"Borzoi",year:2023,auth:"Linder et al.",org:"Calico",cls:"core",parent:"enformer",ctx:524288,res:32,tracks:7611,params:null,sp:["human","mouse"],ro:["rna","access","tf","histone","cage"],acc:"open",score:84,cites:330,note:"Predicts RNA-seq coverage at 32 bp, so one model covers transcription, splicing and polyadenylation."},
+ {id:"chrombpnet",name:"ChromBPNet",year:2024,auth:"Pampari et al.",org:"Stanford",cls:"core",parent:"bpnet",ctx:2114,res:1,tracks:null,params:null,sp:["human"],ro:["access"],acc:"open",score:68,cites:160,note:"Base-resolution accessibility with the Tn5 and DNase enzyme bias modelled out."},
+ {id:"flashzoi",name:"Flashzoi",year:2024,auth:"Hingerl et al.",org:"TU Munich",cls:"derivative",parent:"borzoi",ctx:524288,res:32,tracks:7611,params:null,sp:["human","mouse"],ro:["rna","access","tf","histone","cage"],acc:"open",score:61,cites:30,note:"Borzoi retrained with rotary embeddings and FlashAttention for faster inference."},
+ {id:"malinois",name:"Malinois",year:2024,auth:"Gosai et al.",org:"Broad / JAX",cls:"mpra",parent:null,ctx:600,res:600,tracks:3,params:null,sp:["human"],ro:["mpra"],acc:"open",score:50,cites:180,note:"Predicts MPRA enhancer activity in three cell lines and was used to design cell-type-specific CREs."},
+ {id:"alphagenome",name:"AlphaGenome",year:2025,auth:"Avsec et al.",org:"Google DeepMind",cls:"core",parent:"enformer",ctx:1048576,res:1,tracks:7058,params:null,sp:["human","mouse"],ro:["access","tf","histone","cage","rna","splice","contact"],acc:"api",score:81,cites:360,note:"One model reads 1 Mb at base resolution across every major readout, including splicing and contacts."},
+ {id:"decima",name:"Decima",year:2025,auth:"Lal et al.",org:"Genentech",cls:"derivative",parent:"borzoi",ctx:524288,res:524288,tracks:null,params:null,sp:["human"],ro:["expr"],acc:"open",score:54,cites:25,note:"Fine-tunes Borzoi on single-cell pseudobulk data to predict cell-type gene expression."},
+ {id:"evo2",name:"Evo 2",year:2025,auth:"Brixi et al.",org:"Arc Institute",cls:"dna-lm",parent:null,ctx:1000000,res:1,tracks:null,params:"40B",sp:["multi"],ro:[],acc:"open",score:77,cites:420,note:"StripedHyena 2 language model trained on genomes from across the tree of life."}
+];
+const BY=Object.fromEntries(M.map(m=>[m.id,m]));
+const CH={}; M.forEach(m=>{if(m.parent)(CH[m.parent]=CH[m.parent]||[]).push(m.id)});
+const CHRONO=[...M].sort((a,b)=>a.year-b.year||a.name.localeCompare(b.name)).map(m=>m.id);
+const WEIGHTS=[["attention","Attention",.35],["momentum","Momentum",.25],["usage","Usage",.20],["openness","Openness",.10],["runnable","Runnability",.10]];
+M.forEach(m=>{
+  const ys=[];for(let y=m.year;y<=2026;y++)ys.push(y);
+  const w=ys.map((y,i)=>Math.pow(Math.min(i+1,5),1.7)*(y===2026?.85:1));const s=w.reduce((a,b)=>a+b,0);
+  m.byYear=ys.map((y,i)=>({y,n:Math.round(m.cites*w[i]/s)}));m.c12=m.byYear[m.byYear.length-1].n;
+  let h=[...m.id].reduce((a,c)=>(a*31+c.charCodeAt(0))%2147483647,7)||7;const rnd=()=>(h=(h*16807)%2147483647)/2147483647;
+  const b=m.score/100,cl=v=>Math.max(.06,Math.min(1,v));
+  m.comps={attention:cl(b+(Math.log10(m.cites)-2.7)*.25+(rnd()-.5)*.1),momentum:cl(b+(m.year-2020)*.05+(rnd()-.5)*.2),usage:cl(b+(rnd()-.5)*.3),openness:cl(m.acc==="open"?.75+rnd()*.25:m.acc==="nc"?.45:.2),runnable:cl(b+(rnd()-.5)*.3)};
+});
+const CHANGES=[["+","Decima","added to the registry"],["↑","AlphaGenome","rank 4 → 3, score +1.2"],["★","Borzoi","passed 300 citations"],["!","Orca","no commits in 180 days"],["⇄","Enformer · Borzoi","jointly benchmarked in 2 new papers"]];
+
+/* ---------------- helpers ---------------- */
+const $=s=>document.querySelector(s);
+const LMAX=Math.log10(3e8);
+const xf=bp=>Math.max(0,Math.min(1,Math.log10(bp)/LMAX));
+const pct=v=>(v*100).toFixed(3)+"%";
+const perWin=m=>m.res>=m.ctx;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function fmtBp(n){if(n==null)return"—";if(n<1000)return Math.round(n)+" bp";if(n<1e6){const k=n/1000;return(k>=10?Math.round(k):+k.toFixed(1))+" kb"}const v=n/1e6;return(v>=10?Math.round(v):+v.toFixed(1))+" Mb"}
+const fmtN=n=>n==null?"—":n.toLocaleString("en-US");
+function roman(n){const t=[[10,"X"],[9,"IX"],[5,"V"],[4,"IV"],[1,"I"]];let s="";for(const[v,r]of t)while(n>=v){s+=r;n-=v}return s}
+function spark(m,w,h,col,area){
+  const v=m.byYear.map(d=>d.n),mx=Math.max(...v,1),n=v.length;
+  const X=i=>n===1?w/2:2+i*(w-6)/(n-1),Y=val=>h-2-(val/mx)*(h-6);
+  const line="M"+v.map((val,i)=>X(i).toFixed(1)+","+Y(val).toFixed(1)).join("L");
+  const ar=line+"L"+X(n-1).toFixed(1)+","+(h-1)+"L"+X(0).toFixed(1)+","+(h-1)+"Z";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${ar}" fill="${area}"/><path d="${line}" fill="none" stroke="${col}" stroke-width="1.4" stroke-linejoin="round"/><circle cx="${X(n-1).toFixed(1)}" cy="${Y(v[n-1]).toFixed(1)}" r="2.3" fill="${col}"/></svg>`;
+}
+
+/* ---------------- state ---------------- */
+const S={view:"browser",gray:false,sp:"all",ro:new Set(),q:"",sort:"score",sel:null,ci:0};
+const SORTS={score:(a,b)=>b.score-a.score,context:(a,b)=>b.ctx-a.ctx||a.res-b.res,resolution:(a,b)=>a.res-b.res||b.ctx-a.ctx,year:(a,b)=>a.year-b.year||a.name.localeCompare(b.name)};
+function list(){
+  const q=S.q.trim().toLowerCase();
+  return M.filter(m=>(S.gray||!GRAY.has(m.cls))
+    &&(S.sp==="all"||m.sp.includes(S.sp)||m.sp.includes("multi"))
+    &&(!S.ro.size||m.ro.some(r=>S.ro.has(r)))
+    &&(!q||[m.name,m.org,m.auth,CLS[m.cls],...m.ro.map(r=>RO[r].l)].join(" ").toLowerCase().includes(q))
+  ).sort(SORTS[S.sort]);
+}
+const rankOf=L=>{const r={};[...L].sort(SORTS.score).forEach((m,i)=>r[m.id]=i+1);return r};
+function sync(){
+  document.querySelectorAll("[data-ro]").forEach(b=>b.setAttribute("aria-pressed",S.ro.has(b.dataset.ro)));
+  document.querySelectorAll("[data-sp]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sp===S.sp));
+  document.querySelectorAll("[data-sortv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sortv===S.sort));
+  document.querySelectorAll("[data-gray]").forEach(b=>b.setAttribute("aria-pressed",S.gray));
+  document.querySelectorAll(".q").forEach(i=>{if(i!==document.activeElement)i.value=S.q});
+}
+function render(){({browser:renderA,guide:renderB,terminal:renderC})[S.view]()}
+
+/* =================== A · genome browser =================== */
+$("#a-chips").innerHTML=READ.map(([k,l])=>`<button class="a-chip" data-ro="${k}" style="--c:var(--r-${k})"><i></i>${l}</button>`).join("");
+function axisTicks(withLabels,odd){
+  let h="";for(let d=0;d<=8;d++)for(let k=1;k<=9;k++){const bp=k*10**d;if(bp>3e8)break;const p=pct(xf(bp));
+    h+=`<span class="tk${k===1?" maj":""}" style="left:${p}"></span>`;
+    if(k===1&&withLabels)h+=`<span class="tl${odd&&d%2?" odd":""}" style="left:${p};${d===0?"transform:none":""}">${fmtBp(bp)}</span>`}
+  return h;
+}
+function markA(m){
+  const x1=xf(m.res),x2=xf(m.ctx),c=`var(--r-${m.ro[0]||"access"})`;
+  if(perWin(m))return`<span class="a-dot" style="left:${pct(x2)};--c:${c}"></span>`;
+  if(!m.ro.length)return`<span class="a-bar lm" style="left:${pct(x1)};width:${pct(x2-x1)}"></span>`;
+  return`<span class="a-bar" style="left:${pct(x1)};width:${pct(x2-x1)}">${m.ro.map(k=>`<span style="--c:var(--r-${k})"></span>`).join("")}</span>`;
+}
+function rowA(m,r){
+  const x1=xf(m.res),x2=xf(m.ctx),flip=x2>.84,pw=perWin(m);
+  const lab=pw?`${fmtBp(m.ctx)} · 1 value/window`:`${fmtBp(m.res)} → ${fmtBp(m.ctx)}`;
+  const tag=GRAY.has(m.cls)?`<b class="a-tag">${CLS[m.cls]}</b>`:m.cls==="derivative"?`<b class="a-tag">from ${BY[m.parent].name}</b>`:"";
+  return`<div class="a-row" role="button" tabindex="0" data-open="${m.id}" aria-selected="${S.sel===m.id}">
+    <div class="a-lab"><span class="a-rank">${r}</span><span class="a-name">${m.name}</span>
+      <span class="a-score">${m.score}<span class="a-meter"><i style="width:${m.score}%"></i></span></span>
+      <span class="a-meta">${m.year} · ${m.org}${tag}</span></div>
+    <div class="a-trk"><div class="a-in">${markA(m)}<span class="a-bl${flip?" flip":""}${pw&&!flip?" dot":""}" style="left:${pct(flip?x1:x2)}">${lab}</span></div></div>
+    <div class="a-sp">${spark(m,64,26,"var(--a-hi)","rgba(242,198,109,.14)")}<span>${fmtN(m.cites)}<small>+${fmtN(m.c12)} in 2026</small></span></div>
+  </div>`;
+}
+function renderA(){
+  const L=list(),R=rankOf(L),n=M.filter(m=>S.gray||!GRAY.has(m.cls)).length;
+  $("#a-status").innerHTML=`<span class="a-intro">Each model is a track on one log-scale ruler. Its bar runs from the finest detail it outputs to the full stretch of DNA it reads. Hover the tracks to read across the field at any scale; click one for its spec sheet.</span><span><b>${L.length}</b> of ${n} tracks</span><span>ruler: log₁₀ bp, 1 bp – 300 Mb</span><span>sorted by <b>${S.sort}</b></span>`;
+  $("#a-grid").innerHTML=`<div class="a-head"><div class="a-hcell a-hl">Model · score</div><div class="a-trk"><div class="a-in a-ruler" id="a-axis">${axisTicks(true,true)}</div></div><div class="a-hcell a-hs">Citations</div></div>`
+    +(L.length?L.map(m=>rowA(m,R[m.id])).join(""):`<div class="a-empty">No tracks match. Clear a filter or the goto box.</div>`)
+    +`<div class="a-x" id="a-x" hidden></div><div class="a-tip" id="a-tip" hidden></div>`;
+}
+const grid=$("#a-grid");
+grid.addEventListener("mousemove",e=>{
+  const ax=$("#a-axis"),xh=$("#a-x"),tip=$("#a-tip");if(!ax||!xh)return;
+  const r=ax.getBoundingClientRect(),g=grid.getBoundingClientRect();
+  if(e.clientX<r.left||e.clientX>r.right){xh.hidden=tip.hidden=true;return}
+  const f=(e.clientX-r.left)/r.width,bp=Number((10**(f*LMAX)).toPrecision(2)),L=list();
+  const see=L.filter(m=>m.ctx>=bp).length,fine=L.filter(m=>!perWin(m)&&m.res<=bp).length;
+  const x=e.clientX-g.left;xh.style.left=x+"px";xh.hidden=false;
+  tip.innerHTML=`<b>${fmtBp(bp)}</b><br>${see} of ${L.length} read at least this much DNA<br>${fine} output at this resolution or finer`;
+  tip.hidden=false;const tw=tip.offsetWidth;
+  tip.style.left=(x+tw+16>g.width?x-tw-10:x+10)+"px";tip.style.top=Math.max(44,e.clientY-g.top+14)+"px";
+});
+grid.addEventListener("mouseleave",()=>{const xh=$("#a-x"),tip=$("#a-tip");if(xh){xh.hidden=true;tip.hidden=true}});
+grid.addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset.open){e.preventDefault();openA(e.target.dataset.open)}});
+const drawer=$("#a-drawer");
+function drawerHTML(m){
+  const yb=m.byYear,mx=Math.max(...yb.map(d=>d.n),1),W=400,H=96,bw=(W-10)/yb.length;
+  const bars=yb.map((d,i)=>{const bh=Math.max(1,(d.n/mx)*(H-28));return`<rect x="${(5+i*bw+2).toFixed(1)}" y="${(H-16-bh).toFixed(1)}" width="${(bw-4).toFixed(1)}" height="${bh.toFixed(1)}" fill="${i===yb.length-1?"var(--a-hi)":"var(--a-ink2)"}" opacity="${i===yb.length-1?1:.55}"/>`+(i===0||i===yb.length-1?`<text x="${(5+i*bw+bw/2).toFixed(1)}" y="${H-3}" text-anchor="middle" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--a-dim)">${d.y}</text>`:"")}).join("");
+  const peak=yb.reduce((a,b)=>b.n>a.n?b:a);
+  const kids=(CH[m.id]||[]).map(id=>`<button data-open="${id}">${BY[id].name}</button>`).join("");
+  const par=m.parent?`<button data-open="${m.parent}">${BY[m.parent].name}</button><span>→</span>`:"";
+  return`<button class="a-close" data-close>esc ✕</button>
+  <p class="a-eye">${CLS[m.cls]} · ${m.year}</p><h2 class="a-dname">${m.name}</h2><p class="a-dauth">${m.auth} · ${m.org}</p>
+  <p class="a-dnote">${m.note}</p>
+  <div class="a-mini">${axisTicks(false)}${markA(m)}${[0,3,6].map(d=>`<span class="tl" style="left:${pct(xf(10**d))};${d===0?"transform:none":""}">${fmtBp(10**d)}</span>`).join("")}</div>
+  <p class="a-dh" style="margin-top:34px">Spec sheet</p>
+  <dl class="a-dl"><dt>Input context</dt><dd>${fmtN(m.ctx)} bp (${fmtBp(m.ctx)})</dd><dt>Output resolution</dt><dd>${perWin(m)?"one value per window":fmtN(m.res)+" bp"}</dd><dt>Output tracks</dt><dd>${m.tracks?fmtN(m.tracks):m.cls==="dna-lm"?"embeddings":"per cell / per gene"}</dd><dt>Parameters</dt><dd>${m.params||"not reported"}</dd><dt>Species</dt><dd>${m.sp.join(", ")}</dd><dt>Access</dt><dd>${ACC[m.acc]}</dd></dl>
+  <p class="a-dh">Readouts</p><div class="a-chips" style="padding:0">${m.ro.length?m.ro.map(k=>`<span class="a-chip" aria-pressed="true" style="--c:var(--r-${k})"><i></i>${RO[k].l}</span>`).join(""):`<span class="a-links">none: sequence embeddings only</span>`}</div>
+  <p class="a-dh">Score ${m.score} / 100</p>${WEIGHTS.map(([k,l,w])=>`<div class="a-comp"><span>${l} ×${w.toFixed(2)}</span><div><i style="width:${(m.comps[k]*100).toFixed(0)}%"></i></div><b>${m.comps[k].toFixed(2)}</b></div>`).join("")}
+  <p class="a-dh">Citations by year · ${fmtN(m.cites)} total, peak ${peak.y}</p><svg width="100%" viewBox="0 0 ${W} ${H}" role="img" aria-label="Citations per year">${bars}</svg>
+  <p class="a-dh">Lineage</p><div class="a-lin">${par}<span class="cur">${m.name}</span>${kids?`<span>→</span>${kids}`:""}${!par&&!kids?`<span>no tracked parent or descendants</span>`:""}</div>
+  <p class="a-dh">Links</p><p class="a-links">paper · code · weights · PyPI: wired up in the real build</p>`;
+}
+function openA(id){
+  S.sel=id;drawer.innerHTML=drawerHTML(BY[id]);drawer.scrollTop=0;drawer.classList.add("open");drawer.setAttribute("aria-hidden","false");
+  document.querySelectorAll(".a-row").forEach(r=>r.setAttribute("aria-selected",r.dataset.open===id));
+  drawer.querySelector(".a-close").focus({preventScroll:true});
+}
+function closeA(){
+  if(!drawer.classList.contains("open"))return;drawer.classList.remove("open");drawer.setAttribute("aria-hidden","true");
+  const id=S.sel;S.sel=null;document.querySelectorAll(".a-row").forEach(r=>r.setAttribute("aria-selected","false"));
+  const row=document.querySelector(`.a-row[data-open="${id}"]`);if(row&&S.view==="browser")row.focus({preventScroll:true});
+}
+
+/* =================== B · field guide =================== */
+$("#b-ro").insertAdjacentHTML("beforeend",READ.map(([k,l])=>`<button class="b-pill" data-ro="${k}" style="--c:var(--r-${k})"><i></i>${l}</button>`).join(""));
+const LANE={deepsea:0,sei:0,expecto:1,basset:2,scbasset:2,basenji:3,enformer:3,borzoi:3,flashzoi:3,decima:4,alphagenome:5,akita:6,bpnet:7,chrombpnet:7,orca:8,spliceai:9,malinois:10,nt:11,hyenadna:12,evo2:13};
+function treeB(L){
+  const vis=new Set(L.map(m=>m.id)),lanes=[...new Set(L.map(m=>LANE[m.id]))].sort((a,b)=>a-b),li=Object.fromEntries(lanes.map((l,i)=>[l,i]));
+  const W=1080,pl=34,pr=150,top=40,lh=42,H=top+Math.max(1,lanes.length)*lh+8;
+  const X=y=>pl+(y-2015)/11*(W-pl-pr),Y=m=>top+li[LANE[m.id]]*lh+lh/2,R=m=>5+Math.sqrt(m.cites)/5;
+  let s=`<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Lineage of sequence-to-function models, 2015 to 2026">`;
+  for(let y=2015;y<=2026;y++){const x=X(y);s+=`<line x1="${x}" y1="${top-8}" x2="${x}" y2="${H-6}" stroke="var(--b-rule)" stroke-width="1"/><text x="${x}" y="${top-16}" text-anchor="middle" font-family="Work Sans, sans-serif" font-size="11" fill="var(--b-dim)">${y}</text>`}
+  L.forEach(m=>{if(m.parent&&vis.has(m.parent)){const p=BY[m.parent],x1=X(p.year),y1=Y(p),x2=X(m.year),y2=Y(m),dx=Math.max(30,(x2-x1)*.5);
+    s+=`<path d="M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}" fill="none" stroke="var(--b-ink2)" stroke-width="1.3"/>`}});
+  L.forEach(m=>{const x=X(m.year),y=Y(m),r=R(m),g=GRAY.has(m.cls);
+    const fill=g?"var(--b-paper)":m.cls==="derivative"?"var(--b-derive)":"var(--b-ink)";
+    s+=`<circle cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${fill}" stroke="${g?"var(--b-accent)":"var(--b-paper)"}" stroke-width="${g?1.4:2}"${g?' stroke-dasharray="3 2"':""}><title>${m.name} (${m.year}), ${fmtN(m.cites)} citations</title></circle>`;
+    s+=`<text x="${(x+r*.7+3).toFixed(1)}" y="${(y-Math.max(6,r*.7)).toFixed(1)}" font-family="Instrument Serif, Georgia, serif" font-style="italic" font-size="18" fill="var(--b-ink)" stroke="var(--b-paper)" stroke-width="5" paint-order="stroke" stroke-linejoin="round">${m.name}</text>`});
+  return s+"</svg>";
+}
+function rfB(m){
+  const x1=xf(m.res),x2=xf(m.ctx);let h="";
+  for(let d=0;d<=8;d++)h+=`<span class="tick${d%3===0?" lab":""}" style="left:${pct(xf(10**d))}"></span>`;
+  if(perWin(m))h+=`<span class="dot" style="left:${pct(x2)}"></span>`;
+  else h+=`<span class="bar${m.ro.length?"":" lm"}" style="left:${pct(x1)};width:${pct(x2-x1)}"></span>`;
+  return h;
+}
+function ringB(v){const r=19,c=2*Math.PI*r;return`<svg width="48" height="48" viewBox="0 0 48 48" role="img" aria-label="Score ${v} of 100"><circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--b-rule)" stroke-width="4"/><circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--b-accent)" stroke-width="4" stroke-dasharray="${(c*v/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 24 24)"/><text x="24" y="29" text-anchor="middle" font-family="Work Sans, sans-serif" font-weight="600" font-size="14" fill="var(--b-ink)">${v}</text></svg>`}
+function plateB(m){
+  const n=CHRONO.indexOf(m.id)+1,g=GRAY.has(m.cls);
+  return`<article class="b-plate">
+    <div class="b-ptop"><span>Plate ${roman(n)}</span><span class="${g?"b-cls-gray":m.cls==="derivative"?"b-cls-derivative":""}">${CLS[m.cls]}</span></div>
+    <h3 class="b-name">${m.name}</h3>
+    <p class="b-auth">${m.auth}, ${m.year} · ${m.org}</p>
+    <div class="b-rf" aria-hidden="true">${rfB(m)}</div>
+    <p class="b-rfcap"><span>1 bp</span><span>Sees ${fmtBp(m.ctx)} · ${perWin(m)?"one value per window":"resolves "+fmtBp(m.res)}</span><span>1 Mb</span></p>
+    <dl class="b-dl"><dt>Output tracks</dt><dd>${m.tracks?fmtN(m.tracks):m.cls==="dna-lm"?"embeddings":"per cell / per gene"}</dd><dt>Species</dt><dd>${m.sp.join(", ")}</dd><dt>Access</dt><dd>${ACC[m.acc]}</dd><dt>Parameters</dt><dd>${m.params||"not reported"}</dd>${m.parent?`<dt>Descends from</dt><dd><i>${BY[m.parent].name}</i></dd>`:""}</dl>
+    <div class="b-ro">${m.ro.length?m.ro.map(k=>`<span style="--c:var(--r-${k})"><i></i>${RO[k].l}</span>`).join(""):`<span>Embeddings only</span>`}</div>
+    <p class="b-note">${m.note}</p>
+    <div class="b-foot">${ringB(m.score)}<div><b>${fmtN(m.cites)}</b> citations<br>${fmtN(m.c12)} so far in 2026</div>${spark(m,72,30,"var(--b-accent)","rgba(43,90,134,.12)")}</div>
+  </article>`;
+}
+function renderB(){
+  const L=list();
+  $("#b-tree").innerHTML=L.length?treeB(L):`<p class="b-empty" style="padding:20px">Nothing to draw with these filters.</p>`;
+  $("#b-count").textContent=`${L.length} plate${L.length===1?"":"s"}, ordered by ${({year:"first description",score:"score",context:"range",resolution:"resolution"})[S.sort]}.`;
+  $("#b-grid").innerHTML=L.length?L.map(plateB).join(""):`<p class="b-empty">No specimens match these filters.</p>`;
+}
+
+/* =================== C · terminal =================== */
+const SORT_CYCLE=["score","context","resolution","year"];
+function glyphs(m){return READ.map(([k,,g])=>m.ro.includes(k)?`<span style="color:var(--r-${k})">${g}</span>`:`<span class="off">·</span>`).join("")}
+function rulerTxt(m){
+  const N=40;let s="";const pi=Math.min(N-1,Math.floor(xf(m.ctx)*N));
+  for(let i=0;i<N;i++){const bp=10**(((i+.5)/N)*LMAX);
+    if(perWin(m))s+=i===pi?'<span class="c-amb">◆</span>':'<span class="c-dim">·</span>';
+    else s+=(bp>=m.res*.97&&bp<=m.ctx*1.03)?`<span class="c-amb">${m.ro.length?"━":"╍"}</span>`:'<span class="c-dim">·</span>'}
+  const lab=Array(N+6).fill(" ");[[0,"1bp"],[3,"1kb"],[6,"1Mb"]].forEach(([d,t])=>{const p=Math.round(xf(10**d)*N);[...t].forEach((c,j)=>lab[p+j]=c)});
+  return [s,`<span class="c-dim">${lab.join("").trimEnd()}</span>`];
+}
+const sparkTxt=v=>{const b="▁▂▃▄▅▆▇█",mx=Math.max(...v,1);return v.map(x=>b[Math.min(7,Math.round(x/mx*7))]).join("")};
+const tbar=(v,n=18)=>{const f=Math.round(v*n);return`<span class="c-amb">${"█".repeat(f)}</span><span class="c-faint" style="color:var(--c-faint)">${"░".repeat(n-f)}</span>`};
+function detailC(m){
+  if(!m)return'<span class="c-dim">no models match.\npress esc to clear the filter.</span>';
+  const [r1,r2]=rulerTxt(m),pad=s=>s.padEnd(12," ");
+  const lin=[m.parent?BY[m.parent].name+" → ":"",`<span class="c-amb">${m.name}</span>`,(CH[m.id]||[]).length?" → "+(CH[m.id]).map(i=>BY[i].name).join(", "):""].join("");
+  return[`<span class="c-h">${esc(m.name.toUpperCase())}</span>  <span class="c-dim">${CLS[m.cls].toLowerCase()} · ${m.year}</span>`,
+  `<span class="c-dim">${esc(m.auth)} · ${esc(m.org)}</span>`,"",
+  `${pad("range")}${r1}`,`${pad("")}${r2}`,
+  `${pad("context")}${fmtN(m.ctx)} bp`,
+  `${pad("resolution")}${perWin(m)?"1 value / window":fmtN(m.res)+" bp"}`,
+  `${pad("tracks")}${m.tracks?fmtN(m.tracks):m.cls==="dna-lm"?"embeddings":"per cell / gene"}`,
+  `${pad("params")}${m.params||'<span class="c-dim">n/r</span>'}`,
+  `${pad("species")}${m.sp.join(", ")}`,
+  `${pad("access")}${m.acc==="open"?'<span class="c-good">open weights</span>':ACC[m.acc].toLowerCase()}`,
+  `${pad("readouts")}${m.ro.length?m.ro.map(k=>`<span style="color:var(--r-${k})">${RO[k].l.toLowerCase()}</span>`).join(", "):'<span class="c-dim">none (embeddings)</span>'}`,"",
+  `<span class="c-h">score ${m.score}</span>`,
+  ...WEIGHTS.map(([k,l,w])=>`${pad("  "+l.toLowerCase())}${tbar(m.comps[k])} ${m.comps[k].toFixed(2)} <span class="c-dim">×${w.toFixed(2)}</span>`),"",
+  `${pad("citations")}<span class="c-amb">${sparkTxt(m.byYear.map(d=>d.n))}</span>  ${fmtN(m.cites)} total · +${fmtN(m.c12)} in 2026`,
+  `${pad("lineage")}${lin}`,"",
+  `<span class="c-dim"># ${esc(m.note)}</span>`].join("\n");
+}
+function renderC(){
+  const L=list(),R=rankOf(L);if(S.ci>=L.length)S.ci=Math.max(0,L.length-1);
+  const flags=[S.gray?"--all":"",S.sp!=="all"?"--species="+S.sp:"",S.ro.size?"--readout="+[...S.ro].join(","):""].filter(Boolean).join(" ");
+  $("#c-cmdline").innerHTML=`<span class="p">s2f@tracker:~$</span> ls models --sort=${S.sort}${flags?" "+flags:""}${S.q?` | grep -i "${esc(S.q)}"`:""}  <span class="c-dim">(${L.length})</span>`;
+  $("#c-flags").innerHTML=`<button class="c-flag" data-gray aria-pressed="${S.gray}">[${S.gray?"x":" "}] gray zone</button>`
+    +["all","human","mouse"].map(s=>`<button class="c-flag" data-sp="${s}" aria-pressed="${S.sp===s}">(${S.sp===s?"•":" "}) ${s}</button>`).join("")
+    +READ.map(([k,l,g])=>`<button class="c-flag" data-ro="${k}" aria-pressed="${S.ro.has(k)}" title="${l}">[${S.ro.has(k)?`<span style="color:var(--r-${k})">${g}</span>`:g}]</button>`).join("");
+  $("#c-list").innerHTML=`<table class="c-t"><thead><tr><th></th><th class="n">#</th><th>model</th><th class="n">yr</th><th class="n">context</th><th class="n">res</th><th class="n">score</th><th class="n">cites</th><th class="n">2026</th><th>A T H C R E S 3 M</th></tr></thead><tbody>`
+    +L.map((m,i)=>`<tr data-ci="${i}" class="${i===S.ci?"sel":""}"><td class="ptr">${i===S.ci?"▸":""}</td><td class="n c-dim">${R[m.id]}</td><td>${m.name}${GRAY.has(m.cls)?' <span class="c-gray">*</span>':""}</td><td class="n">${String(m.year).slice(2)}</td><td class="n">${fmtBp(m.ctx)}</td><td class="n">${perWin(m)?"—":fmtBp(m.res)}</td><td class="n">${m.score}</td><td class="n">${fmtN(m.cites)}</td><td class="n c-good">+${fmtN(m.c12)}</td><td class="c-g">${glyphs(m)}</td></tr>`).join("")
+    +`</tbody></table>`+(L.length?"":`<p class="c-dim" style="padding:10px 12px">(no rows)</p>`);
+  $("#c-detail").innerHTML=detailC(L[S.ci]);
+  const bins=[["< 1 kb",0,1e3],["1–10 kb",1e3,1e4],["10–100 kb",1e4,1e5],["0.1–1 Mb",1e5,1.01e6],["> 1 Mb",1.01e6,1e12]];
+  $("#c-hist").innerHTML=`<span class="c-h">┤ input window ├</span>\n`+bins.map(([l,a,b])=>{const c=L.filter(m=>m.ctx>=a&&m.ctx<b).length;return`${l.padEnd(11)}<span class="c-amb">${"■".repeat(c*2)}</span> ${c}`}).join("\n")
+    +`\n\n<span class="c-dim">* = gray zone (DNA LM, splicing, MPRA)</span>`;
+  $("#c-log").innerHTML=`<span class="c-h">┤ changes this week (sample) ├</span>\n`+CHANGES.map(([s,n,t])=>`<span class="c-amb">${s}</span> ${n.padEnd(18)} <span class="c-dim">${t}</span>`).join("\n")
+    +`\n\n<span class="c-dim">also published as an Atom feed</span>`;
+}
+function scrollSelC(){const r=document.querySelector(".c-t tr.sel");if(r)r.scrollIntoView({block:"nearest"})}
+
+/* ---------------- events ---------------- */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-ro],[data-sp],[data-gray],[data-sortv],[data-open],[data-close],[data-ci]");if(!t)return;
+  if(t.dataset.open!==undefined){openA(t.dataset.open);return}
+  if(t.dataset.close!==undefined){closeA();return}
+  if(t.dataset.ci!==undefined){S.ci=+t.dataset.ci;renderC();return}
+  if(t.dataset.ro!==undefined){if(t.tagName!=="BUTTON")return;S.ro.has(t.dataset.ro)?S.ro.delete(t.dataset.ro):S.ro.add(t.dataset.ro)}
+  else if(t.dataset.sp!==undefined)S.sp=t.dataset.sp;
+  else if(t.dataset.gray!==undefined)S.gray=!S.gray;
+  else if(t.dataset.sortv!==undefined)S.sort=t.dataset.sortv;
+  S.ci=0;sync();render();
+});
+document.addEventListener("input",e=>{if(e.target.classList.contains("q")){S.q=e.target.value;S.ci=0;render()}});
+document.addEventListener("keydown",e=>{
+  const inField=e.target.matches&&e.target.matches("input,textarea");
+  if(e.key==="Escape"){
+    if(S.view==="browser"){closeA();return}
+    if(S.view==="terminal"){if(inField)e.target.blur();else if(S.q){S.q="";sync();renderC()}}
+    return;
+  }
+  if(S.view!=="terminal")return;
+  if(inField){if(e.key==="Enter"||e.key==="ArrowDown"){e.preventDefault();e.target.blur()}return}
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  const L=list();
+  switch(e.key){
+    case"/":e.preventDefault();$("#c-q").focus();return;
+    case"j":case"ArrowDown":S.ci=Math.min(L.length-1,S.ci+1);break;
+    case"k":case"ArrowUp":S.ci=Math.max(0,S.ci-1);break;
+    case"g":S.gray=!S.gray;S.ci=0;break;
+    case"s":S.sort=SORT_CYCLE[(SORT_CYCLE.indexOf(S.sort)+1)%SORT_CYCLE.length];S.ci=0;break;
+    case"h":S.sp="human";S.ci=0;break;case"m":S.sp="mouse";S.ci=0;break;case"a":S.sp="all";S.ci=0;break;
+    default:return;
+  }
+  e.preventDefault();sync();renderC();scrollSelC();
+});
+
+/* ---------------- routing ---------------- */
+const VIEWS=["browser","guide","terminal"];
+function measure(){document.documentElement.style.setProperty("--swh",$("#sw").offsetHeight+"px")}
+function route(want){
+  const v=typeof want==="string"?want:location.hash.slice(1);S.view=VIEWS.includes(v)?v:"browser";
+  VIEWS.forEach(n=>{$("#v-"+n).hidden=n!==S.view;document.querySelector(`.sw-tab[href="#${n}"]`).setAttribute("aria-current",n===S.view?"page":"false")});
+  document.body.className="v-"+S.view;document.documentElement.style.colorScheme=S.view==="guide"?"light":"dark";
+  if(S.view!=="browser")closeA();
+  if(S.view==="guide"&&S.sort==="resolution")S.sort="year";
+  sync();measure();render();
+}
+addEventListener("hashchange",()=>route());addEventListener("resize",measure);
+document.querySelectorAll(".sw-tab").forEach(a=>a.addEventListener("click",e=>{
+  e.preventDefault();const v=a.getAttribute("href").slice(1);
+  try{history.replaceState(null,"","#"+v)}catch(err){}
+  route(v);scrollTo(0,0);
+}));
+route();
+</script>
