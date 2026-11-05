@@ -1,3 +1,5 @@
+<img src="assets/logo.svg" alt="S2F Tracker logo" width="80">
+
 # S2F Tracker
 
 S2F Tracker maps sequence-to-function models on a shared base-pair ruler, making it easier to compare their input lengths, prediction resolution, readouts, and research activity.
