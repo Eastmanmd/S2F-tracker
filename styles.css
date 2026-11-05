@@ -3,24 +3,24 @@
 :root{
   color-scheme:dark;
   --deep:#0a0e14; --bg:#0f141b; --panel:#141b25; --raise:#1a2330; --line:#263244; --grid:#1a2230;
-  --ink:#dce4ee; --ink2:#93a3b8; --dim:#6f7f96; --hi:#f2c66d; --sel:#1b2738; --bad:#e5625a; --good:#3fb68b;
+  --ink:#dce4ee; --ink2:#93a3b8; --dim:#6f7f96; --hi:#80b5f5; --sel:#1b2738; --bad:#e5625a; --good:#3fb68b;
   --r-access:#3fb68b; --r-tf:#5b8def; --r-histone:#e2a33a; --r-cage:#e5625a; --r-rna:#b67ee0;
   --r-expr:#e089b4; --r-splice:#36bfc9; --r-contact:#a8b45a; --r-mpra:#c8a479; --r-polya:#7fa7c9; --r-tss:#d6cf6a;
   --c-core:#dce4ee; --c-derivative:#f2c66d; --c-gray:#64738a;
   --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --barh:52px;
-  --on-hi:#0a0e14; --hi-soft:rgba(242,198,109,.14); --scrim:rgba(5,8,12,.55); --shadow:rgba(0,0,0,.4);
+  --on-hi:#0a0e14; --hi-soft:rgba(128,181,245,.14); --scrim:rgba(5,8,12,.55); --shadow:rgba(0,0,0,.4);
 }
 /* light background: same layout, darker readout colours so thin stripes and
    small labels keep their contrast on white */
 :root[data-theme="light"]{
   color-scheme:light;
   --deep:#ffffff; --bg:#f4f6f9; --panel:#ffffff; --raise:#eef2f6; --line:#d3dae3; --grid:#e7ebf0;
-  --ink:#16202c; --ink2:#46566b; --dim:#647184; --hi:#9a6a0c; --sel:#fbf1d9; --bad:#c2412f; --good:#1d8459;
+  --ink:#16202c; --ink2:#46566b; --dim:#647184; --hi:#245fae; --sel:#e7f0fc; --bad:#c2412f; --good:#1d8459;
   --r-access:#1f9a6b; --r-tf:#3a6cd6; --r-histone:#c4821a; --r-cage:#d0473e; --r-rna:#9157c7;
   --r-expr:#c8568d; --r-splice:#1a97a3; --r-contact:#7a872b; --r-mpra:#9c7b4b; --r-polya:#4d7ca6; --r-tss:#a3951b;
-  --on-hi:#ffffff; --hi-soft:rgba(154,106,12,.12); --scrim:rgba(20,28,40,.35); --shadow:rgba(20,28,40,.18);
+  --on-hi:#ffffff; --hi-soft:rgba(36,95,174,.12); --scrim:rgba(20,28,40,.35); --shadow:rgba(20,28,40,.18);
 }
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;scroll-padding-top:calc(var(--barh) + 12px)}
@@ -41,9 +41,7 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 .bar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--deep) 94%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
 .bar-in{display:flex;align-items:center;gap:8px 20px;min-height:var(--barh)}
 .brand{display:flex;align-items:center;gap:9px;font:600 15px var(--mono);letter-spacing:.02em;color:var(--ink);text-decoration:none;white-space:nowrap}
-.logo{display:grid;grid-template-columns:repeat(4,4px);gap:2px;height:18px;align-items:end}
-.logo i{display:block;border-radius:1px}
-.nt-a{height:100%;background:var(--r-access)}.nt-c{height:60%;background:var(--r-tf)}.nt-g{height:80%;background:var(--r-histone)}.nt-t{height:40%;background:var(--r-cage)}
+.logo{display:block;width:28px;height:28px;flex:none}
 .nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
 .nav::-webkit-scrollbar{display:none}
 .nav a{padding:6px 10px;border-radius:4px;font:14px var(--sans);color:var(--ink2);text-decoration:none;white-space:nowrap}
