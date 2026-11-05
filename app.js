@@ -83,7 +83,7 @@ const doiUrl = d => !d ? null : d.startsWith("http") ? d : "https://doi.org/" + 
 let MODELS = [], BY = {}, KIDS = {}, META = {}, H2H = null, CHANGELOG = null, CITE_INDEX = null;
 const CITES = {};          // per-model citing papers, loaded on demand
 const S = {
-  view: "tracks", sel: null, gray: false, sp: "all", ro: new Set(), q: "", sort: "score",
+  view: "tracks", sel: null, gray: false, sp: "all", ro: new Set(), q: "", sort: "score", reverse: false,
   w: { ...DEFAULT_W }, pair: null, pmode: "bench",
   puse: "all", pdom: "all", pmodel: "all", psort: "new", pshow: 60,
   duse: "all", dshow: 25,
@@ -127,7 +127,10 @@ function list() {
     (S.sp === "all" || (m.species || []).includes(S.sp) || (m.species || []).includes("multi")) &&
     (!S.ro.size || (m.readouts || []).some(r => S.ro.has(r))) &&
     matchesQuery(m, q)
-  ).sort(SORTS[S.sort] || SORTS.score);
+  ).sort((a, b) => (S.reverse ? -1 : 1) * (SORTS[S.sort] || SORTS.score)(a, b));
+}
+function sortDirection() {
+  return (["year", "resolution"].includes(S.sort) !== S.reverse) ? "ascending" : "descending";
 }
 
 /* ---------------- URL state ---------------- */
@@ -139,6 +142,7 @@ function readHash() {
   S.sp = ["human", "mouse"].includes(p.get("sp")) ? p.get("sp") : "all";
   S.ro = new Set((p.get("ro") || "").split(",").filter(k => READOUTS[k]));
   S.sort = SORTS[p.get("s")] ? p.get("s") : "score";
+  S.reverse = p.get("rev") === "1";
   S.q = p.get("q") || "";
   S.pair = p.get("pair") || null;
   S.pmode = p.get("pm") === "any" ? "any" : "bench";
@@ -155,6 +159,7 @@ function hashFor(over = {}) {
   if (st.sp !== "all") p.set("sp", st.sp);
   if (st.ro.size) p.set("ro", [...st.ro].join(","));
   if (st.sort !== "score") p.set("s", st.sort);
+  if (st.reverse) p.set("rev", "1");
   if (st.q) p.set("q", st.q);
   if (st.view === "pairs" && st.pair) p.set("pair", st.pair);
   if (st.view === "pairs" && st.pmode !== "bench") p.set("pm", st.pmode);
@@ -232,6 +237,7 @@ function buildControls() {
   $("#controls").addEventListener("click", e => {
     const b = e.target.closest("button"); if (!b) return;
     if (b.dataset.sort) S.sort = b.dataset.sort;
+    else if (b.id === "sort-direction") S.reverse = !S.reverse;
     else if (b.dataset.sp) S.sp = b.dataset.sp;
     else if ("gray" in b.dataset) S.gray = !S.gray;
     else if (b.dataset.ro) S.ro.has(b.dataset.ro) ? S.ro.delete(b.dataset.ro) : S.ro.add(b.dataset.ro);
@@ -257,6 +263,9 @@ function buildControls() {
 }
 function syncControls() {
   $$("[data-sort]").forEach(b => b.setAttribute("aria-pressed", b.dataset.sort === S.sort));
+  const direction = sortDirection();
+  $("#sort-direction").textContent = direction === "ascending" ? "↑ ascending" : "↓ descending";
+  $("#sort-direction").setAttribute("aria-label", `Sort ${direction}; activate to reverse order`);
   $$("[data-sp]").forEach(b => b.setAttribute("aria-pressed", b.dataset.sp === S.sp));
   $$("[data-gray]").forEach(b => b.setAttribute("aria-pressed", S.gray));
   $$("#chips [data-ro]").forEach(b => b.setAttribute("aria-pressed", S.ro.has(b.dataset.ro)));
@@ -313,7 +322,7 @@ function renderTracks() {
   el.innerHTML = `
     <div class="view-head"><h1>Every S2F model on one ruler</h1>
       <p class="lede">Each model is a track on a log-scale base-pair ruler. Its bar runs from the finest detail it outputs to the full stretch of DNA it reads; the stripes are what it predicts. Hover the ruler to read across the field at any scale, click a track for its spec sheet. Ranked by a score built from citations, downloads, openness and upkeep (<a href="#v=methods">how</a>).</p></div>
-    <div class="status"><span><b>${L.length}</b> of ${n} tracks${S.gray ? " incl. gray zone" : ""}</span><span>sorted by <b>${S.sort}</b></span><span>${fmtN(META.total_citations)} citations · ${fmtN(META.unique_citing_works)} citing works</span><span>data ${esc(fmtDate(META.updated))}</span></div>
+    <div class="status"><span><b>${L.length}</b> of ${n} tracks${S.gray ? " incl. gray zone" : ""}</span><span>sorted by <b>${S.sort}</b> ${sortDirection()}</span><span>${fmtN(META.total_citations)} citations · ${fmtN(META.unique_citing_works)} citing works</span><span>data ${esc(fmtDate(META.updated))}</span></div>
     ${changesHTML()}
     <div class="grid" id="grid">
       <div class="head"><div class="hcell hl">Model · score</div><div class="trk"><div class="in ruler" id="axis">${axisTicks(true, true)}</div></div><div class="hcell hs">Citations · trend</div></div>
