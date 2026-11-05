@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>S2F Tracker — sequence-to-function models, mapped</title>
+<meta name="description" content="Every sequence-to-function model drawn on one base-pair ruler: how much DNA it reads, how finely it predicts, what it predicts, and whether anyone cites, downloads or maintains it.">
+<link rel="canonical" href="https://eastmanmd.github.io/S2F-tracker/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="S2F Tracker">
+<meta property="og:url" content="https://eastmanmd.github.io/S2F-tracker/">
+<meta property="og:title" content="Sequence-to-Function Model Tracker">
+<meta property="og:description" content="Every sequence-to-function model on one base-pair ruler, ranked by citations, real usage and upkeep.">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#0a0e14">
+<link rel="alternate" type="application/atom+xml" title="S2F Tracker — weekly changes" href="feed.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="styles.css">
+<script>/* set the saved theme before first paint, so a light-mode visitor never sees a dark flash */
+try { if (localStorage.getItem("s2f-theme") === "light") document.documentElement.dataset.theme = "light"; } catch (e) {}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="bar" id="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="#v=tracks" aria-label="S2F Tracker home">
+      <span class="logo" aria-hidden="true"><i class="nt-a"></i><i class="nt-c"></i><i class="nt-g"></i><i class="nt-t"></i></span>
+      <span>s2f.tracker</span>
+    </a>
+    <nav class="nav" aria-label="Views">
+      <a href="#v=tracks" data-view="tracks">Tracks</a>
+      <a href="#v=lineage" data-view="lineage">Lineage</a>
+      <a href="#v=pairs" data-view="pairs">Evaluated together</a>
+      <a href="#v=papers" data-view="papers">Citing papers</a>
+      <a href="#v=methods" data-view="methods">Methods</a>
+    </nav>
+    <button class="theme" id="theme-btn" type="button" aria-label="Switch to light background" title="Switch to light background">
+      <svg class="moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 10.2A6 6 0 0 1 5.8 2.5a6 6 0 1 0 7.7 7.7z" fill="currentColor"/></svg>
+      <svg class="sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9 13 13M3 13l1.1-1.1M11.9 4.1 13 3"/></g></svg>
+    </button>
+    <label class="goto"><span>goto:</span><input id="q" type="search" placeholder="model, lab or readout" autocomplete="off" spellcheck="false"></label>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+  <div id="loading" class="loading">Loading data…</div>
+  <div id="load-error" class="load-error" hidden></div>
+
+  <!-- shared controls: shown on the views that filter models -->
+  <section class="controls" id="controls" hidden aria-label="Filters">
+    <div class="ctl-row">
+      <div class="ctl" id="ctl-sort"><span>sort</span>
+        <div class="seg"><button data-sort="score">score</button><button data-sort="context">context</button><button data-sort="resolution">resolution</button><button data-sort="year">year</button><button data-sort="citations">citations</button></div>
+      </div>
+      <div class="ctl"><span>species</span>
+        <div class="seg"><button data-sp="all">all</button><button data-sp="human">human</button><button data-sp="mouse">mouse</button></div>
+      </div>
+      <button class="toggle" data-gray type="button"><i aria-hidden="true"></i>gray zone <small id="gray-count"></small></button>
+      <button class="toggle" id="weights-btn" type="button" aria-expanded="false" aria-controls="weights"><i aria-hidden="true"></i>score weights</button>
+    </div>
+    <div class="weights" id="weights" hidden></div>
+    <div class="chips" id="chips" role="group" aria-label="Readouts"></div>
+  </section>
+
+  <section id="view-tracks" class="view" hidden></section>
+  <section id="view-lineage" class="view" hidden></section>
+  <section id="view-pairs" class="view" hidden></section>
+  <section id="view-papers" class="view" hidden></section>
+  <section id="view-methods" class="view" hidden></section>
+</main>
+
+<footer class="foot wrap">
+  <p>Data: <a href="https://openalex.org/" rel="noopener">OpenAlex</a> (citations, citing papers) ·
+    <a href="https://docs.github.com/rest" rel="noopener">GitHub</a> (stars, upkeep, runnability) ·
+    <a href="https://huggingface.co/" rel="noopener">Hugging Face</a>,
+    <a href="https://pypistats.org/" rel="noopener">pypistats</a>,
+    <a href="https://zenodo.org/" rel="noopener">Zenodo</a> and
+    <a href="https://www.kaggle.com/models" rel="noopener">Kaggle</a> (usage).
+    Refreshed every Monday. Citations measure attention, not quality. Research aid only.</p>
+  <p>Weekly changes: <a href="feed.xml">Atom feed</a> · Sister project: <a href="https://eastmanmd.github.io/scFM-tracker/" rel="noopener">scFM Tracker</a></p>
+</footer>
+
+<aside class="drawer" id="drawer" aria-label="Model details" tabindex="-1" hidden></aside>
+<div class="scrim" id="scrim" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>
