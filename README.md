@@ -1,4 +1,4 @@
-<img src="assets/logo.svg" alt="S2F Tracker logo" width="80">
+<img src="assets/logo.svg" alt="S2F Tracker logo" width="80"> 
 
 # S2F Tracker
 
