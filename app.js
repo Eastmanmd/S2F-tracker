@@ -85,7 +85,7 @@ const CITES = {};          // per-model citing papers, loaded on demand
 const S = {
   view: "tracks", sel: null, gray: false, sp: "all", ro: new Set(), q: "", sort: "score", reverse: false,
   w: { ...DEFAULT_W }, pair: null, pmode: "bench",
-  puse: "all", pdom: "all", pmodel: "all", psort: "new", pshow: 60,
+  puse: "all", pdom: "all", pmodel: "all", psort: "new", pshow: 60, ptab: "browse",
   duse: "all", dshow: 25,
 };
 
@@ -663,6 +663,7 @@ function paperIndex() {
 }
 function renderPapers() {
   const el = $("#view-papers");
+  if (S.ptab === "export") { renderPaperExport(); return; }
   if (!CITE_INDEX) { el.innerHTML = `<p class="loading">Loading the citing-paper index…</p>`; loadIndex(); return; }
   const all = paperIndex();
   let L = all.filter(c => (S.puse === "all" || c.use === S.puse) && (S.pdom === "all" || c.domain === S.pdom) &&
@@ -672,6 +673,7 @@ function renderPapers() {
   el.innerHTML = `
     <div class="view-head"><h1>Citing papers</h1>
       <p class="lede">The newest papers citing each tracked model, pooled (${META.citing_index_per_model || 40} most recent per model; ${fmtN(META.unique_citing_works)} citing works exist in all). Every model's full list is in its spec sheet. Use and field are classified automatically from titles and abstracts.</p></div>
+    ${paperTabs()}
     <div class="pfilters">
       <div class="ctl"><span>use</span><div class="seg">${[["all", "all"], ...USES].map(([k, l]) => `<button type="button" data-puse="${k}" aria-pressed="${S.puse === k}">${l}</button>`).join("")}</div></div>
       <div class="ctl"><span>field</span><div class="seg">${["all", "biology", "method"].map(k => `<button type="button" data-pdom="${k}" aria-pressed="${S.pdom === k}">${k}</button>`).join("")}</div></div>
@@ -682,6 +684,58 @@ function renderPapers() {
     <div class="status" style="padding-top:0"><span><b>${fmtN(L.length)}</b> papers</span></div>
     <div class="panel papers">${L.length ? `<ul class="plist">${L.slice(0, S.pshow).map(c => citeItem(c, true)).join("")}</ul>` : `<p class="empty">No papers match.</p>`}</div>
     ${L.length > S.pshow ? `<p><button class="btn" type="button" data-pmore>show ${Math.min(60, L.length - S.pshow)} more</button></p>` : ""}`;
+}
+function paperTabs() {
+  return `<div class="seg paper-tabs" role="group" aria-label="Citing papers sections"><button type="button" data-ptab="browse" aria-pressed="${S.ptab === "browse"}">browse papers</button><button type="button" data-ptab="export" aria-pressed="${S.ptab === "export"}">export papers</button></div>`;
+}
+function renderPaperExport() {
+  const opts = MODELS.slice().sort((a, b) => a.name.localeCompare(b.name));
+  $("#view-papers").innerHTML = `<div class="view-head"><h1>Citing papers</h1><p class="lede">Export citing papers by publication date, model, use and field.</p></div>
+    ${paperTabs()}
+    <form id="paper-export" class="panel export-form">
+      <div class="export-fields">
+        <label>From <input type="date" name="from" required></label>
+        <label>To <input type="date" name="to" required></label>
+        <label>Model <select name="model"><option value="all">All tracked models (including gray zone)</option>${opts.map(m => `<option value="${esc(m.id)}">${esc(m.name)}</option>`).join("")}</select></label>
+        <label>Citing type <select name="use"><option value="all">All types</option>${USES.map(([k, l]) => `<option value="${k}">${l}</option>`).join("")}</select></label>
+        <label>Field <select name="domain"><option value="all">All fields</option><option value="biology">biology</option><option value="method">method</option><option value="unclear">unclear</option><option value="offtopic">off-topic</option></select></label>
+      </div>
+      <p class="note">Dates are inclusive and refer to publication dates. Uses and fields are classified automatically. The export searches the stored citing-paper lists, which depend on OpenAlex coverage; papers without a complete publication date are excluded. Papers citing multiple selected models appear once.</p>
+      <button class="btn" type="submit">Download CSV</button> <span id="export-status" role="status" aria-live="polite"></span>
+    </form>`;
+}
+function csvCell(value) {
+  let s = String(value ?? "");
+  if (/^[\s\u0000-\u001f]*[=+@-]/.test(s)) s = "'" + s;
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+async function exportPapers(form) {
+  const data = new FormData(form), from = data.get("from"), to = data.get("to");
+  const status = form.querySelector("#export-status"), button = form.querySelector('button[type="submit"]');
+  if (from > to) { status.textContent = "The start date must be on or before the end date."; return; }
+  const ids = data.get("model") === "all" ? MODELS.map(m => m.id) : [data.get("model")];
+  button.disabled = true; status.textContent = "Loading citing papers…";
+  try {
+    const lists = await Promise.all(ids.map(loadCites)), byId = new Map();
+    lists.forEach((papers, i) => papers.forEach(c => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(c.date || "") || c.date < from || c.date > to ||
+          (data.get("use") !== "all" && c.use !== data.get("use")) ||
+          (data.get("domain") !== "all" && c.domain !== data.get("domain"))) return;
+      const key = c.id || c.doi; if (!key) return;
+      const entry = byId.get(key) || { ...c, _models: [] };
+      if (!entry._models.includes(ids[i])) entry._models.push(ids[i]);
+      byId.set(key, entry);
+    }));
+    const rows = [...byId.values()].sort((a, b) => b.date.localeCompare(a.date) || String(a.title).localeCompare(String(b.title)));
+    if (!rows.length) { status.textContent = "No papers match these filters."; return; }
+    const columns = ["Publication date", "Title", "DOI", "OpenAlex URL", "First author", "Author count", "Venue", "Citing type", "Field", "Citations", "Cited models"];
+    const csv = [columns, ...rows.map(c => [c.date, c.title, c.doi, c.id ? `https://openalex.org/${c.id.replace(/^https?:\/\/openalex\.org\//, "")}` : "", c.first_author, c.n_authors, c.venue, c.use, c.domain, c.cited_by_count, c._models.map(id => BY[id].name).sort().join("; ")])].map(row => row.map(csvCell).join(",")).join("\r\n");
+    const url = URL.createObjectURL(new Blob(["\ufeff", csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a"); link.href = url; link.download = `citing-papers-${from}-to-${to}.csv`; document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    status.textContent = `Downloaded ${fmtN(rows.length)} ${rows.length === 1 ? "paper" : "papers"}.`;
+  } catch (e) { status.textContent = `Could not load all citing papers (${e.message}). Please try again.`; }
+  finally { button.disabled = false; }
 }
 let indexLoading = null;
 function loadIndex() {
@@ -763,7 +817,7 @@ function onHash() {
 
 /* ---------------- global events ---------------- */
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-open],[data-open-link],[data-close],[data-pair],[data-pmode],[data-puse],[data-pdom],[data-psort],[data-pmore],[data-duse],[data-dmore],#scrim");
+  const t = e.target.closest("[data-open],[data-open-link],[data-close],[data-pair],[data-pmode],[data-puse],[data-pdom],[data-psort],[data-pmore],[data-ptab],[data-duse],[data-dmore],#scrim");
   if (!t) return;
   if (t.closest("#controls")) return;
   if (t.id === "scrim" || "close" in t.dataset) { closeDrawer(); return; }
@@ -774,6 +828,7 @@ document.addEventListener("click", e => {
   if (t.dataset.puse) { S.puse = t.dataset.puse; S.pshow = 60; update(); return; }
   if (t.dataset.pdom) { S.pdom = t.dataset.pdom; S.pshow = 60; update(); return; }
   if (t.dataset.psort) { S.psort = t.dataset.psort; update(); return; }
+  if (t.dataset.ptab) { S.ptab = t.dataset.ptab; renderPapers(); return; }
   if ("pmore" in t.dataset) { S.pshow += 60; renderPapers(); return; }
   if (t.dataset.duse) { S.duse = t.dataset.duse; S.dshow = 25; renderDrawerCites(); return; }
   if ("dmore" in t.dataset) { S.dshow += 50; renderDrawerCites(); return; }
@@ -783,6 +838,7 @@ document.addEventListener("click", e => {  /* gray toggles that live outside #co
   if (b && !b.closest("#controls")) { S.gray = !S.gray; update(); }
 });
 document.addEventListener("change", e => { if (e.target.id === "pmodel") { S.pmodel = e.target.value; S.pshow = 60; renderPapers(); } });
+document.addEventListener("submit", e => { if (e.target.id === "paper-export") { e.preventDefault(); exportPapers(e.target); } });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && drawer().classList.contains("open")) { closeDrawer(); return; }
   if ((e.key === "Enter" || e.key === " ") && e.target.matches(".row,.node")) { e.preventDefault(); openDrawer(e.target.dataset.open); return; }
