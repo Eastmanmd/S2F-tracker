@@ -138,7 +138,9 @@ button.chip:hover{color:var(--ink);border-color:var(--c)}
 .row[aria-selected="true"]{background:var(--sel);box-shadow:inset 3px 0 0 var(--hi)}
 .lab{display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:1px 8px;align-items:center;padding:9px 12px;min-width:0}
 .rank{grid-row:1 / span 2;font:11px var(--mono);color:var(--dim);font-variant-numeric:tabular-nums}
+.name-wrap{display:flex;align-items:center;gap:4px;min-width:0}
 .name{font:600 15px var(--sans);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hot{flex:none;font-size:14px}
 .meta{grid-column:2;font:12px var(--sans);color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .meta .tag{margin-left:6px}
 .score{grid-column:3;grid-row:1 / span 2;display:grid;justify-items:end;gap:4px;font:600 15px var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}

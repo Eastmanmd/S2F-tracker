@@ -285,7 +285,7 @@ function syncControls() {
 }
 
 /* ---------------- view: tracks ---------------- */
-function rowHTML(m, r) {
+function rowHTML(m, r, hot) {
   const g = geom(m), dflt = weightsDefault(), tw = trackWidth();
   const d = dflt ? 0 : Math.round(10 * (m._s - m.score)) / 10;
   /* label goes right of the mark if it fits, else left of it, else over the
@@ -298,8 +298,8 @@ function rowHTML(m, r) {
     return false;
   };
   if (!place(text) && !(g.short && place(text = g.short))) { flip = true; over = true; anchor = 1; }
-  return `<div class="row" role="button" tabindex="0" data-open="${m.id}" aria-selected="${S.sel === m.id}" aria-label="${esc(m.name)}, score ${m._s}, ${esc(g.label)}">
-    <div class="lab"><span class="rank">${r}</span><span class="name">${esc(m.name)}</span>
+  return `<div class="row" role="button" tabindex="0" data-open="${m.id}" aria-selected="${S.sel === m.id}" aria-label="${esc(m.name)}${hot ? ", top three for citations in the past 12 months" : ""}, score ${m._s}, ${esc(g.label)}">
+    <div class="lab"><span class="rank">${r}</span><span class="name-wrap"><span class="name">${esc(m.name)}</span>${hot ? `<span class="hot" aria-hidden="true" title="Top three for citations in the past 12 months">🌶️</span>` : ""}</span>
       <span class="score">${m._s.toFixed(1)}${d ? `<span class="delta" style="color:${d > 0 ? "var(--good)" : "var(--bad)"}">${d > 0 ? "+" : ""}${d.toFixed(1)}</span>` : ""}<span class="meter"><i style="width:${m._s}%"></i></span></span>
       <span class="meta">${m.year} · ${esc(m.org)}${classTag(m)}</span></div>
     <div class="trk"><div class="in">${g.mark}<span class="bl${flip ? " flip" : ""}${over ? " over" : ""}${g.dot && !flip ? " dl" : ""}${g.unk && !flip ? " ul" : ""}" style="left:${pct(anchor)}" title="${esc(g.label)}">${esc(text)}</span></div></div>
@@ -319,6 +319,9 @@ function changesHTML() {
 }
 function renderTracks() {
   const L = list(), R = rankMap(), n = universe().length, el = $("#view-tracks");
+  // Rank all tracked models so the indicator does not change with filters.
+  const recent = MODELS.map(m => m.citations_12m).filter(n => Number.isFinite(n) && n > 0).sort((a, b) => b - a);
+  const hotCutoff = recent.length ? recent[Math.min(2, recent.length - 1)] : Infinity;
   el.innerHTML = `
     <div class="view-head"><h1>Every S2F model on one ruler</h1>
       <p class="lede">Each model is a track on a log-scale base-pair ruler. Its bar runs from the finest detail it outputs to the full stretch of DNA it reads; the stripes are what it predicts. Hover the ruler to read across the field at any scale, click a track for its spec sheet. Ranked by a score built from citations, downloads, openness and upkeep (<a href="#v=methods">how</a>).</p></div>
@@ -326,7 +329,7 @@ function renderTracks() {
     ${changesHTML()}
     <div class="grid" id="grid">
       <div class="head"><div class="hcell hl">Model · score</div><div class="trk"><div class="in ruler" id="axis">${axisTicks(true, true)}</div></div><div class="hcell hs">Citations · trend</div></div>
-      ${L.length ? L.map(m => rowHTML(m, R[m.id])).join("") : `<div class="empty">No tracks match. Clear a readout, the species filter or the goto box${S.gray ? "" : ", or switch on the gray zone"}.</div>`}
+      ${L.length ? L.map(m => rowHTML(m, R[m.id], m.citations_12m >= hotCutoff)).join("") : `<div class="empty">No tracks match. Clear a readout, the species filter or the goto box${S.gray ? "" : ", or switch on the gray zone"}.</div>`}
       <div class="xh" id="xh" hidden></div><div class="tip" id="tip" hidden></div>
     </div>
     <div class="legend">
@@ -334,6 +337,7 @@ function renderTracks() {
       <span><i class="lg-dot"></i>one prediction per window or gene, at its input length</span>
       <span><i class="lg-lm"></i>language model: embeddings, no assay readouts</span>
       <span><i class="lg-unk"></i>length not reported</span>
+      <span>🌶️ top three models by citations in the past 12 months, including ties (among all tracked models)</span>
     </div>`;
   const grid = $("#grid");
   grid.addEventListener("mousemove", e => {
@@ -711,6 +715,7 @@ function renderMethods() {
     <ul>
       <li><strong>Attention</strong>: citations from OpenAlex, deduplicated across preprint and journal versions of the same paper, log-scaled.</li>
       <li><strong>Momentum</strong>: ${esc(META.momentum_basis || "citations dated in the trailing 12 months")}, log-scaled.</li>
+      <li><strong>🌶️</strong>: models in the top three by citations in the past 12 months among all tracked models, including ties. The indicator does not change with filters.</li>
       <li><strong>Usage</strong>: GitHub stars plus downloads per month from every host that reports them: Hugging Face (30-day), PyPI (last month, via pypistats, only for packages that link back to the model's repository), and Zenodo (all-time downloads converted to a lifetime monthly average). Kaggle publishes votes, not downloads, so it is shown but not counted. Cloud buckets and lab websites report nothing and are listed only.</li>
       <li><strong>Openness</strong>: access tier 40% (open 1.0, non-commercial 0.6, gated 0.5, API only 0.2), licence 25%, upkeep 35% (from the last commit).</li>
       <li><strong>Runnable</strong>: an installable package, an environment file, a tagged release, tutorial notebooks and an issue closed in the last 90 days.</li>
