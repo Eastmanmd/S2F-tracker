@@ -265,6 +265,31 @@ button.chip:hover{color:var(--ink);border-color:var(--c)}
 .toplist button:hover{color:var(--hi)}
 .toplist b{font:500 12px var(--mono);color:var(--ink2)}
 
+/* ---------- benchmarks ---------- */
+.benchmark-select{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 16px;font:12px var(--mono);color:var(--ink2)}
+.benchmark-select select{max-width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--panel);color:var(--ink);font:13px var(--sans)}
+.benchmark-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(260px,1fr);gap:16px;align-items:start}
+.benchmark-results,.benchmark-context{padding:18px}
+.benchmark-heading{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 16px}
+.benchmark-heading h2,.benchmark-context h2{margin:4px 0 8px;font:600 17px var(--sans);color:var(--ink)}
+.benchmark-category{font:11px var(--mono);text-transform:uppercase;color:var(--hi)}
+.benchmark-metric{font:12px var(--mono);color:var(--ink2)}
+.benchmark-table-wrap{overflow-x:auto}
+.benchmark-table{width:100%;border-collapse:collapse;text-align:left;font:13px var(--sans)}
+.benchmark-table th,.benchmark-table td{padding:10px 8px;border-bottom:1px solid var(--grid);vertical-align:top}
+.benchmark-table thead th{color:var(--dim);font:11px var(--mono);text-transform:uppercase}
+.benchmark-table tbody th{font-weight:600}
+.benchmark-table button{color:var(--hi);text-align:left}
+.benchmark-table button:hover{text-decoration:underline}
+.benchmark-value{font:600 13px var(--mono);text-align:right}
+.benchmark-table th:last-child{text-align:right}
+.benchmark-context p,.benchmark-missing{font:13px/1.55 var(--sans);color:var(--ink2)}
+.benchmark-context b{color:var(--ink)}
+.benchmark-missing{margin-top:14px}
+.benchmark-missing summary{cursor:pointer;color:var(--hi)}
+.benchmark-foot{margin-top:14px}
+@media(max-width:860px){.benchmark-layout{grid-template-columns:minmax(0,1fr)}}
+
 /* ---------- papers ---------- */
 .paper-tabs{margin-bottom:16px}
 .export-form{padding:18px}

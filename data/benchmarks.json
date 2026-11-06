@@ -1,0 +1,100 @@
+{
+  "benchmarks": [
+    {
+      "id": "chen-blood-eqtl",
+      "category": "Variant effects",
+      "title": "Whole-blood eQTL classification",
+      "dataset": "GTEx v10 whole-blood eQTLs; 14,811 positive variants and 1000 Genomes controls sampled at 10:1",
+      "metric": "AUROC",
+      "direction": "higher",
+      "precision": 3,
+      "method": "An XGBoost classifier was trained on features derived from each model. The same chromosome-based train/test split was used for all methods, with about 20% of variants held out. This is supervised downstream classification, not a zero-shot comparison.",
+      "limitations": "The study also evaluated GWAVA, which is not tracked here. Only the five tracked models and the AUROC values stated in the results text are shown. Model checkpoints were not specified in the main text. Training data overlap has not been independently assessed.",
+      "source": {"label": "Chen et al. (2026), Results: eQTL identification", "url": "https://doi.org/10.1093/bib/bbag599"},
+      "results": [
+        {"model": "alphagenome", "value": 0.810, "config": "Model-derived features + XGBoost"},
+        {"model": "borzoi", "value": 0.804, "config": "Model-derived features + XGBoost"},
+        {"model": "enformer", "value": 0.799, "config": "Model-derived features + XGBoost"},
+        {"model": "expecto", "value": 0.724, "config": "Model-derived features + XGBoost"},
+        {"model": "deepsea", "value": 0.688, "config": "Model-derived features + XGBoost"}
+      ]
+    },
+    {
+      "id": "feng-eqtl",
+      "category": "Variant effects",
+      "title": "Putative causal eQTL classification",
+      "dataset": "eQTL benchmark data from the Borzoi paper repository",
+      "metric": "Mean test AUROC",
+      "direction": "higher",
+      "precision": 4,
+      "method": "A random forest was trained on model-derived differences between reference and alternate sequences. Results average three chromosome-held-out test sets. Enformer, Sei and AlphaGenome use output tracks; the language models use embeddings. Input lengths differ by model.",
+      "limitations": "The paper also reports separate hidden-state and long-sequence configurations, which are excluded here. GROVER is not tracked. Model training overlap with this evaluation has not been independently assessed.",
+      "source": {"label": "Feng et al. (2025), Table 6, eQTL column", "url": "https://www.nature.com/articles/s41467-025-65823-8.pdf#page=8"},
+      "results": [
+        {"model":"alphagenome","value":0.8029,"config":"Output tracks; 131 kb input"},
+        {"model":"enformer","value":0.7699,"config":"Output tracks; 196 kb input"},
+        {"model":"sei","value":0.7497,"config":"Output tracks; 4 kb input"},
+        {"model":"caduceus","value":0.6492,"config":"Caduceus-Ph embedding"},
+        {"model":"hyenadna","value":0.6117,"config":"HyenaDNA embedding"},
+        {"model":"nucleotide-transformer","value":0.6091,"config":"NT-v2-500M embedding"},
+        {"model":"dnabert2","value":0.5702,"config":"DNABERT-2 embedding"}
+      ]
+    },
+    {
+      "id": "feng-pathogenic",
+      "category": "Variant effects",
+      "title": "Pathogenic versus common variants",
+      "dataset": "Genomics Long-Range Benchmark: variant effect pathogenic dataset",
+      "metric": "Mean test AUROC",
+      "direction": "higher",
+      "precision": 4,
+      "method": "A random forest was trained on model-derived differences between reference and alternate sequences. Results average three chromosome-held-out test sets. Enformer and Sei use output tracks; the language models use embeddings. Input lengths differ by model.",
+      "limitations": "The paper also reports separate hidden-state and long-sequence configurations, which are excluded here. GROVER is not tracked. Training data overlap has not been independently assessed.",
+      "source": {"label": "Feng et al. (2025), Table 5", "url": "https://www.nature.com/articles/s41467-025-65823-8.pdf#page=7"},
+      "results": [
+        {"model":"nucleotide-transformer","value":0.7319,"config":"NT-v2-500M embedding"},
+        {"model":"caduceus","value":0.6959,"config":"Caduceus-Ph embedding"},
+        {"model":"enformer","value":0.6662,"config":"Output tracks; 196 kb input"},
+        {"model":"sei","value":0.6640,"config":"Output tracks; 4 kb input"},
+        {"model":"hyenadna","value":0.6120,"config":"HyenaDNA embedding"},
+        {"model":"dnabert2","value":0.5380,"config":"DNABERT-2 embedding"}
+      ]
+    },
+    {
+      "id": "feng-dnase",
+      "category": "Chromatin accessibility",
+      "title": "DNase I hypersensitivity classification",
+      "dataset": "Human DNase I Hypersensitive sequence classification dataset",
+      "metric": "Test AUROC",
+      "direction": "higher",
+      "precision": 4,
+      "method": "A supervised random forest was trained on mean-pooled embeddings from frozen pretrained models. Scores measure classification on the study's test set, not direct assay-track prediction.",
+      "limitations": "GROVER was evaluated in the paper but is not tracked. Exact training overlap and uncertainty for this dataset have not been independently assessed.",
+      "source": {"label": "Feng et al. (2025), Table 1: DNase I Hypersensitive", "url": "https://www.nature.com/articles/s41467-025-65823-8.pdf#page=3"},
+      "results": [
+        {"model":"caduceus","value":0.8799,"config":"Caduceus-Ph-131K embedding + random forest"},
+        {"model":"dnabert2","value":0.8666,"config":"DNABERT-2 embedding + random forest"},
+        {"model":"nucleotide-transformer","value":0.8524,"config":"NT-v2-500M embedding + random forest"},
+        {"model":"hyenadna","value":0.8295,"config":"HyenaDNA embedding + random forest"}
+      ]
+    },
+    {
+      "id": "feng-donor",
+      "category": "Splicing",
+      "title": "Splice donor sequence classification",
+      "dataset": "Human donor-site sequence classification dataset",
+      "metric": "Test AUROC",
+      "direction": "higher",
+      "precision": 4,
+      "method": "A supervised random forest was trained on mean-pooled embeddings from frozen pretrained models. This is sequence classification, not a direct comparison of splice variant effect predictors.",
+      "limitations": "GROVER was evaluated in the paper but is not tracked. Exact training overlap and uncertainty for this dataset have not been independently assessed.",
+      "source": {"label": "Feng et al. (2025), Table 1: Donor", "url": "https://www.nature.com/articles/s41467-025-65823-8.pdf#page=3"},
+      "results": [
+        {"model":"dnabert2","value":0.9056,"config":"DNABERT-2 embedding + random forest"},
+        {"model":"caduceus","value":0.8535,"config":"Caduceus-Ph-131K embedding + random forest"},
+        {"model":"nucleotide-transformer","value":0.8198,"config":"NT-v2-500M embedding + random forest"},
+        {"model":"hyenadna","value":0.8128,"config":"HyenaDNA embedding + random forest"}
+      ]
+    }
+  ]
+}

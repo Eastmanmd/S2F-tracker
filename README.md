@@ -35,3 +35,7 @@ It contains related sequence models, such as DNA language models and specialized
 
 **Does “evaluated together” mean two models were directly compared?**  
 Not necessarily. It counts papers classified as benchmarks that cite both models; it does not verify a head-to-head comparison.
+
+**How does the benchmark scoreboard rank models?**
+
+It ranks the curated model configurations within one published evaluation using the reported metric. Each benchmark shows its dataset, method, limitations, and source; results from different evaluations are not combined. A missing model has no result in the curated subset and may have been evaluated elsewhere.

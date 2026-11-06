@@ -39,7 +39,7 @@ const SIGNALS = [
   ["responsive", "Responsive", "an issue closed in the last 90 days"],
 ];
 const LMAX = Math.log10(3e8);
-const VIEWS = ["tracks", "lineage", "pairs", "papers", "methods"];
+const VIEWS = ["tracks", "lineage", "benchmarks", "pairs", "papers", "methods"];
 const NARROW = window.matchMedia("(max-width: 860px)");
 /* width of the track column in px, from the layout in styles.css */
 function trackWidth() {
@@ -80,13 +80,13 @@ const roLabel = k => (READOUTS[k] || [k])[0];
 const doiUrl = d => !d ? null : d.startsWith("http") ? d : "https://doi.org/" + d;
 
 /* ---------------- state ---------------- */
-let MODELS = [], BY = {}, KIDS = {}, META = {}, H2H = null, CHANGELOG = null, CITE_INDEX = null;
+let MODELS = [], BY = {}, KIDS = {}, META = {}, H2H = null, CHANGELOG = null, CITE_INDEX = null, BENCHMARKS = null;
 const CITES = {};          // per-model citing papers, loaded on demand
 const S = {
   view: "tracks", sel: null, gray: false, sp: "all", ro: new Set(), q: "", sort: "score", reverse: false,
   w: { ...DEFAULT_W }, pair: null, pmode: "bench",
   puse: "all", pdom: "all", pmodel: "all", psort: "new", pshow: 60, ptab: "browse",
-  duse: "all", dshow: 25,
+  duse: "all", dshow: 25, benchmark: null,
 };
 
 /* score under the current weights; missing components drop out and the
@@ -142,6 +142,7 @@ function readHash() {
   S.sp = ["human", "mouse"].includes(p.get("sp")) ? p.get("sp") : "all";
   S.ro = new Set((p.get("ro") || "").split(",").filter(k => READOUTS[k]));
   S.sort = SORTS[p.get("s")] ? p.get("s") : "score";
+  S.benchmark = p.get("b") || null;
   S.reverse = p.get("rev") === "1";
   S.q = p.get("q") || "";
   S.pair = p.get("pair") || null;
@@ -154,6 +155,7 @@ function readHash() {
 function hashFor(over = {}) {
   const st = { ...S, ...over }, p = new URLSearchParams();
   if (st.view !== "tracks") p.set("v", st.view);
+  if (st.view === "benchmarks" && st.benchmark) p.set("b", st.benchmark);
   if (st.sel) p.set("m", st.sel);
   if (st.gray) p.set("g", "1");
   if (st.sp !== "all") p.set("sp", st.sp);
@@ -651,6 +653,53 @@ function renderPairs() {
     </div>`;
 }
 
+/* ---------------- view: benchmarks ---------------- */
+let benchmarkLoading = null, benchmarkError = null;
+function renderBenchmarks() {
+  const el = $("#view-benchmarks");
+  if (!BENCHMARKS) {
+    el.innerHTML = benchmarkError
+      ? `<p class="load-error">Could not load benchmark data (${esc(benchmarkError)}). <button class="btn" type="button" data-benchmark-retry>Retry</button></p>`
+      : `<p class="loading">Loading benchmark results…</p>`;
+    if (!benchmarkError && !benchmarkLoading) {
+      benchmarkLoading = getJSON("data/benchmarks.json")
+        .then(data => { BENCHMARKS = data.benchmarks || []; })
+        .catch(e => { benchmarkError = e.message; })
+        .finally(() => { benchmarkLoading = null; if (S.view === "benchmarks") renderBenchmarks(); });
+    }
+    return;
+  }
+  if (!BENCHMARKS.length) { el.innerHTML = `<p class="empty">No benchmark results available yet.</p>`; return; }
+  const benchmark = BENCHMARKS.find(b => b.id === S.benchmark) || BENCHMARKS[0];
+  const categories = [...new Set(BENCHMARKS.map(b => b.category))];
+  const rows = benchmark.results.filter(r => BY[r.model] && Number.isFinite(r.value))
+    .slice().sort((a, b) => (benchmark.direction === "lower" ? a.value - b.value : b.value - a.value) || BY[a.model].name.localeCompare(BY[b.model].name));
+  const present = new Set(rows.map(r => r.model));
+  const missing = MODELS.filter(m => !present.has(m.id)).map(m => m.name).sort((a, b) => a.localeCompare(b));
+  el.innerHTML = `
+    <div class="view-head"><h1>Benchmark scoreboard</h1>
+      <p class="lede">Published results for a small, curated set of evaluations. Select a benchmark to compare models evaluated under that study's protocol.</p></div>
+    <div class="benchmark-select"><label for="benchmark-choice">Benchmark</label><select id="benchmark-choice">${categories.map(category =>
+      `<optgroup label="${esc(category)}">${BENCHMARKS.filter(b => b.category === category).map(b => `<option value="${esc(b.id)}"${b.id === benchmark.id ? " selected" : ""}>${esc(b.title)} · ${esc(b.source.label.split(",")[0])}</option>`).join("")}</optgroup>`).join("")}</select></div>
+    <div class="benchmark-layout">
+      <div class="panel benchmark-results">
+        <div class="benchmark-heading"><div><span class="benchmark-category">${esc(benchmark.category)}</span><h2>${esc(benchmark.title)}</h2></div><span class="benchmark-metric">${esc(benchmark.metric)} · ${benchmark.direction === "lower" ? "lower" : "higher"} is better</span></div>
+        <p class="note">Ranks are among the tracked model configurations shown here, using the values reported by the source. A small difference does not necessarily imply a meaningful advantage.</p>
+        <div class="benchmark-table-wrap"><table class="benchmark-table"><thead><tr><th scope="col">Rank</th><th scope="col">Model</th><th scope="col">Evaluated configuration</th><th scope="col">Score</th></tr></thead><tbody>
+        ${rows.map((r, i) => `<tr><td>${i && r.value === rows[i - 1].value ? "" : i + 1}</td><th scope="row"><button type="button" data-open="${esc(r.model)}">${esc(BY[r.model].name)}</button></th><td>${esc(r.config)}</td><td class="benchmark-value">${r.value.toFixed(benchmark.precision ?? 4)}</td></tr>`).join("")}
+        </tbody></table></div>
+        <details class="benchmark-missing"><summary>${missing.length} tracked models not in these curated results</summary><p>${esc(missing.join(", "))}</p><p>Not listed does not mean a model was never evaluated.</p></details>
+      </div>
+      <aside class="panel benchmark-context"><h2>About this evaluation</h2>
+        <p><b>Dataset</b><br>${esc(benchmark.dataset)}</p>
+        <p><b>Method</b><br>${esc(benchmark.method)}</p>
+        <p><b>Limitations</b><br>${esc(benchmark.limitations)}</p>
+        <p><b>Source</b><br><a href="${esc(benchmark.source.url)}" rel="noopener">${esc(benchmark.source.label)}</a></p>
+      </aside>
+    </div>
+    <p class="note benchmark-foot">These rankings describe a particular dataset, model configuration and evaluation method. Results from different benchmarks are not combined into a single model score. Citing-paper classifications do not determine these results.</p>`;
+}
+
 /* ---------------- view: papers ---------------- */
 function paperIndex() {
   if (!CITE_INDEX) return [];
@@ -809,7 +858,7 @@ function update() {
   $$(".nav a").forEach(a => a.setAttribute("aria-current", a.dataset.view === S.view ? "page" : "false"));
   VIEWS.forEach(v => { $("#view-" + v).hidden = v !== S.view; });
   syncControls();
-  ({ tracks: renderTracks, lineage: renderLineage, pairs: renderPairs, papers: renderPapers, methods: renderMethods })[S.view]();
+  ({ tracks: renderTracks, lineage: renderLineage, benchmarks: renderBenchmarks, pairs: renderPairs, papers: renderPapers, methods: renderMethods })[S.view]();
   writeHash();
   document.title = S.view === "tracks" ? "S2F Tracker — sequence-to-function models, mapped" : `${$(`.nav a[data-view="${S.view}"]`).textContent} · S2F Tracker`;
 }
@@ -825,7 +874,7 @@ function onHash() {
 
 /* ---------------- global events ---------------- */
 document.addEventListener("click", e => {
-  const t = e.target.closest("[data-open],[data-open-link],[data-close],[data-pair],[data-pmode],[data-puse],[data-pdom],[data-psort],[data-pmore],[data-ptab],[data-duse],[data-dmore],#scrim");
+  const t = e.target.closest("[data-open],[data-open-link],[data-close],[data-pair],[data-pmode],[data-puse],[data-pdom],[data-psort],[data-pmore],[data-ptab],[data-benchmark-retry],[data-duse],[data-dmore],#scrim");
   if (!t) return;
   if (t.closest("#controls")) return;
   if (t.id === "scrim" || "close" in t.dataset) { closeDrawer(); return; }
@@ -837,6 +886,7 @@ document.addEventListener("click", e => {
   if (t.dataset.pdom) { S.pdom = t.dataset.pdom; S.pshow = 60; update(); return; }
   if (t.dataset.psort) { S.psort = t.dataset.psort; update(); return; }
   if (t.dataset.ptab) { S.ptab = t.dataset.ptab; renderPapers(); return; }
+  if ("benchmarkRetry" in t.dataset) { benchmarkError = null; renderBenchmarks(); return; }
   if ("pmore" in t.dataset) { S.pshow += 60; renderPapers(); return; }
   if (t.dataset.duse) { S.duse = t.dataset.duse; S.dshow = 25; renderDrawerCites(); return; }
   if ("dmore" in t.dataset) { S.dshow += 50; renderDrawerCites(); return; }
@@ -845,7 +895,10 @@ document.addEventListener("click", e => {  /* gray toggles that live outside #co
   const b = e.target.closest("[data-gray]");
   if (b && !b.closest("#controls")) { S.gray = !S.gray; update(); }
 });
-document.addEventListener("change", e => { if (e.target.id === "pmodel") { S.pmodel = e.target.value; S.pshow = 60; renderPapers(); } });
+document.addEventListener("change", e => {
+  if (e.target.id === "pmodel") { S.pmodel = e.target.value; S.pshow = 60; renderPapers(); }
+  else if (e.target.id === "benchmark-choice") { S.benchmark = e.target.value; renderBenchmarks(); writeHash(); }
+});
 document.addEventListener("submit", e => { if (e.target.id === "paper-export") { e.preventDefault(); exportPapers(e.target); } });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && drawer().classList.contains("open")) { closeDrawer(); return; }
