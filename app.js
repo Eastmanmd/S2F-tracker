@@ -426,6 +426,12 @@ function pairPartners(id) {
   return Object.entries(H2H.pairs).map(([k, v]) => { const [a, b] = k.split("|"); return a === id ? [b, v, k] : b === id ? [a, v, k] : null; })
     .filter(x => x && BY[x[0]] && x[1].bench > 0).sort((a, b) => b[1].bench - a[1].bench || b[1].any - a[1].any).slice(0, 8);
 }
+function trainingDataHTML(training) {
+  if (!training) return `<p class="d-h">Training data</p><p class="note">Training data profile not yet curated.</p>`;
+  const fields = [["Training stage", "stage"], ["Summary", "summary"], ["Data sources", "sources"], ["Assays", "assays"], ["Coverage", "coverage"], ["Reported size", "size"], ["Data splits", "split"], ["Benchmark overlap", "overlap"]];
+  return `<p class="d-h">Training data</p><dl class="dl">${fields.map(([label, key]) => `<dt>${label}</dt><dd>${esc(training[key] || "Not yet curated.")}</dd>`).join("")}</dl>
+    <p class="note">Sources: ${(training.references || []).map(ref => `<a href="${esc(ref.url)}" rel="noopener">${esc(ref.label)}</a>`).join(" · ") || "not yet curated"}</p>`;
+}
 function drawerHTML(m) {
   const R = rankMap(), g = geom(m), kids = (KIDS[m.id] || []).map(id => BY[id]).sort((a, b) => a.year - b.year);
   const anc = ancestors(m.id), partners = pairPartners(m.id);
@@ -449,6 +455,8 @@ function drawerHTML(m) {
   <dl class="dl">${spec.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>
   <p class="d-h">Readouts</p>
   <div class="chips" style="padding:0">${(m.readouts || []).length ? m.readouts.map(k => `<span class="chip" aria-pressed="true" style="--c:${roColor(k)}"><i></i>${esc(roLabel(k))}</span>`).join("") : `<span class="note">none: sequence embeddings only</span>`}</div>
+
+  ${trainingDataHTML(m.training_data)}
 
   <p class="d-h">Score ${m._s.toFixed(1)} / 100 ${weightsDefault() ? "" : `<span>published ${m.score.toFixed(1)}</span>`}</p>
   ${compRows(m)}

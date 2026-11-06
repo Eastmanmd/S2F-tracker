@@ -387,6 +387,7 @@ def main():
             "org": model["org"],
             "year": model["year"],
             "notes": model.get("notes"),
+            "training_data": model.get("training_data"),
             "context_bp": model.get("context_bp"),
             "output": model.get("output"),
             "resolution_bp": model.get("resolution_bp"),
