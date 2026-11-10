@@ -92,6 +92,7 @@ const S = {
 /* score under the current weights; missing components drop out and the
    remaining weights are renormalized, exactly as build_data.py does */
 function scoreOf(m, w = S.w) {
+  if (m.score == null) return null;
   let num = 0, den = 0;
   const miss = new Set(m.components_missing || []);
   for (const [k] of COMPONENTS) {
@@ -106,11 +107,11 @@ const inUniverse = m => S.gray || !GRAY.has(m.class);
 function universe() { return MODELS.filter(inUniverse); }
 function rankMap() {
   const r = {};
-  universe().sort((a, b) => b._s - a._s || a.name.localeCompare(b.name)).forEach((m, i) => { r[m.id] = i + 1; });
+  universe().filter(m => m._s != null).sort((a, b) => b._s - a._s || a.name.localeCompare(b.name)).forEach((m, i) => { r[m.id] = i + 1; });
   return r;
 }
 const SORTS = {
-  score: (a, b) => b._s - a._s || a.name.localeCompare(b.name),
+  score: (a, b) => (b._s ?? -1) - (a._s ?? -1) || a.name.localeCompare(b.name),
   context: (a, b) => (b.context_bp ?? -1) - (a.context_bp ?? -1) || (a.resolution_bp ?? 1e12) - (b.resolution_bp ?? 1e12),
   resolution: (a, b) => (a.resolution_bp ?? 1e12) - (b.resolution_bp ?? 1e12) || (b.context_bp ?? -1) - (a.context_bp ?? -1),
   year: (a, b) => a.year - b.year || a.name.localeCompare(b.name),
@@ -289,7 +290,7 @@ function syncControls() {
 /* ---------------- view: tracks ---------------- */
 function rowHTML(m, r, hot) {
   const g = geom(m), dflt = weightsDefault(), tw = trackWidth();
-  const d = dflt ? 0 : Math.round(10 * (m._s - m.score)) / 10;
+  const d = dflt || m._s == null ? 0 : Math.round(10 * (m._s - m.score)) / 10;
   /* label goes right of the mark if it fits, else left of it, else over the
      track's right end on a backing so it stays readable */
   const left0 = g.x1 != null ? g.x1 : g.x, fits = t => t.length * 6.7 + (g.unk ? 54 : 14);
@@ -300,12 +301,12 @@ function rowHTML(m, r, hot) {
     return false;
   };
   if (!place(text) && !(g.short && place(text = g.short))) { flip = true; over = true; anchor = 1; }
-  return `<div class="row" role="button" tabindex="0" data-open="${m.id}" aria-selected="${S.sel === m.id}" aria-label="${esc(m.name)}${hot ? ", top three for citations in the past 12 months" : ""}, score ${m._s}, ${esc(g.label)}">
-    <div class="lab"><span class="rank">${r}</span><span class="name-wrap"><span class="name">${esc(m.name)}</span>${hot ? `<span class="hot" aria-hidden="true" title="Top three for citations in the past 12 months">🌶️</span>` : ""}</span>
-      <span class="score">${m._s.toFixed(1)}${d ? `<span class="delta" style="color:${d > 0 ? "var(--good)" : "var(--bad)"}">${d > 0 ? "+" : ""}${d.toFixed(1)}</span>` : ""}<span class="meter"><i style="width:${m._s}%"></i></span></span>
+  return `<div class="row" role="button" tabindex="0" data-open="${m.id}" aria-selected="${S.sel === m.id}" aria-label="${esc(m.name)}${hot ? ", top three for citations in the past 12 months" : ""}, ${m._s == null ? "score pending" : `score ${m._s}`}, ${esc(g.label)}">
+    <div class="lab"><span class="rank">${r ?? "—"}</span><span class="name-wrap"><span class="name">${esc(m.name)}</span>${hot ? `<span class="hot" aria-hidden="true" title="Top three for citations in the past 12 months">🌶️</span>` : ""}</span>
+      <span class="score">${m._s == null ? "—" : m._s.toFixed(1)}${d ? `<span class="delta" style="color:${d > 0 ? "var(--good)" : "var(--bad)"}">${d > 0 ? "+" : ""}${d.toFixed(1)}</span>` : ""}${m._s == null ? "" : `<span class="meter"><i style="width:${m._s}%"></i></span>`}</span>
       <span class="meta">${m.year} · ${esc(m.org)}${classTag(m)}</span></div>
     <div class="trk"><div class="in">${g.mark}<span class="bl${flip ? " flip" : ""}${over ? " over" : ""}${g.dot && !flip ? " dl" : ""}${g.unk && !flip ? " ul" : ""}" style="left:${pct(anchor)}" title="${esc(g.label)}">${esc(text)}</span></div></div>
-    <div class="sp">${spark(m.counts_by_year, 64, 26)}<span>${fmtN(m.citations)}<small>+${fmtN(m.citations_12m)} past 12 mo</small></span></div>
+    <div class="sp">${spark(m.counts_by_year, 64, 26)}<span>${fmtN(m.citations)}<small>${m.citations_12m == null ? "not measured" : `+${fmtN(m.citations_12m)} past 12 mo`}</small></span></div>
   </div>`;
 }
 function changesHTML() {
@@ -376,10 +377,12 @@ function usageHTML(m) {
     rows.push(["GitHub", `<a href="${esc(gh.url)}" rel="noopener">${esc(gh.repo)}${gh.path ? "/" + esc(gh.path) : ""}</a>`]);
     rows.push(["Stars", stars]);
     rows.push(["Last commit", `${esc(fmtDate(gh.pushed_at))} <small>· ${esc(m.upkeep || "unknown")}${gh.archived ? ", archived" : ""}${gh.path ? " (folder history)" : ""}</small>`]);
-  } else rows.push(["Code", `<small>no public code repository</small>`]);
+  } else if (m.code_url) rows.push(["Code", `<a href="${esc(m.code_url)}" rel="noopener">Repository</a> <small>· metrics not yet measured</small>`]);
+  else rows.push(["Code", `<small>no public code repository</small>`]);
   if (hf && hf.repos && hf.repos.length) {
     rows.push(["Hugging Face", `${fmtN(hf.downloads)} downloads / 30 d <small>· ${hf.repos.length} repo${hf.repos.length > 1 ? "s" : ""}, ${fmtN(hf.likes)} likes</small><br>${hf.repos.map(r => `<a href="${esc(r.url)}" rel="noopener">${esc(r.id)}</a>`).join("<br>")}`]);
   }
+  else if ((m.weights_urls || []).length) rows.push(["Weights", m.weights_urls.map(url => `<a href="${esc(url)}" rel="noopener">Hugging Face</a>`).join(" · ")]);
   if (u.pypi) rows.push(["PyPI", `<a href="${esc(u.pypi.url)}" rel="noopener">${esc(u.pypi.package)}</a> · ${fmtN(u.pypi.downloads_last_month)} / month${u.pypi.stale ? " <small>(last week's value)</small>" : ""}`]);
   (u.zenodo || []).forEach(z => rows.push(["Zenodo", `<a href="${esc(z.url)}" rel="noopener">${esc(z.title || z.id)}</a><br>${fmtN(z.downloads_all_time)} downloads since ${esc(fmtDate(z.since))} <small>≈ ${fmtN(z.downloads_per_month)} / month</small>`]));
   (u.kaggle || []).forEach(k => rows.push(["Kaggle", `<a href="${esc(k.url)}" rel="noopener">${esc(k.id)}</a> · ${fmtN(k.votes)} votes <small>(Kaggle publishes no download counts)</small>`]));
@@ -451,6 +454,7 @@ function drawerHTML(m) {
   <p class="d-eye">${esc(CLASS_LABEL[m.class])} · ${m.year}${R[m.id] ? ` · #${R[m.id]} of ${universe().length}` : ""}</p>
   <h2 class="d-name" id="d-name">${esc(m.name)}</h2><p class="d-org">${esc(m.org)}</p>
   <p class="d-note">${esc(m.notes)}</p>
+  ${m.source_url ? `<p class="note"><a href="${esc(m.source_url)}" rel="noopener">Model description</a></p>` : ""}
   <div class="mini" aria-hidden="true">${axisTicks(false)}${g.mark}${[0, 3, 6].map(d => `<span class="tl" style="left:${pct(xf(10 ** d))};${d === 0 ? "transform:none" : ""}">${fmtBp(10 ** d)}</span>`).join("")}</div>
 
   <p class="d-h">Spec sheet</p>
@@ -460,9 +464,10 @@ function drawerHTML(m) {
 
   ${trainingDataHTML(m.training_data)}
 
-  <p class="d-h">Score ${m._s.toFixed(1)} / 100 ${weightsDefault() ? "" : `<span>published ${m.score.toFixed(1)}</span>`}</p>
+  <p class="d-h">${m._s == null ? "Score pending" : `Score ${m._s.toFixed(1)} / 100 ${weightsDefault() ? "" : `<span>published ${m.score.toFixed(1)}</span>`}`}</p>
+  ${m._s == null ? `<p class="note">Not ranked: no indexed model paper is available for citation metrics.</p>` : ""}
   ${compRows(m)}
-  ${(m.components_missing || []).length ? `<p class="note">Not measured: ${esc(m.components_missing.join(", "))}. Its weight is shared among the other components rather than scored as zero.</p>` : ""}
+  ${(m.components_missing || []).length && m._s != null ? `<p class="note">Not measured: ${esc(m.components_missing.join(", "))}. Its weight is shared among the other components rather than scored as zero.</p>` : ""}
   ${m.usage_untracked ? `<p class="note">Nothing public to count usage on (no repository of its own, no tracked weights host or package), so usage scores 0 rather than being left out.${m.github ? "" : " With no code repository, runnability scores 0 too."}</p>` : ""}
 
   <p class="d-h">Usage and upkeep</p>
@@ -470,25 +475,25 @@ function drawerHTML(m) {
   <p class="d-h">Can you run it?</p>
   ${runnableHTML(m)}
 
-  <p class="d-h">Citations by year <span>${fmtN(m.citations)} total · ${fmtN(m.citations_12m)} in 12 mo${vel ? " · " + vel : ""}</span></p>
+  ${m.citations == null ? `<p class="d-h">Citations</p><p class="note">Citation data is not yet available.</p>` : `<p class="d-h">Citations by year <span>${fmtN(m.citations)} total · ${fmtN(m.citations_12m)} in 12 mo${vel ? " · " + vel : ""}</span></p>
   ${yearBars(m.counts_by_year)}
   <p class="d-h">How citing papers use it</p>
   ${stackHTML(m.use_counts, USE_COLOR, ["application", "benchmark", "extension", "review"])}
   <p class="d-h">Field of citing papers</p>
   ${stackHTML(m.domain_counts, DOMAIN_COLOR, ["biology", "method", "unclear", "offtopic"])}
-  <p class="note">Classified automatically from titles and abstracts; treat as a rough split.</p>
+  <p class="note">Classified automatically from titles and abstracts; treat as a rough split.</p>`}
 
   <p class="d-h">Lineage</p>
   <div class="lin">${anc.map(id => `<button type="button" data-open="${id}">${esc(BY[id].name)}</button><span>→</span>`).join("")}<span class="cur">${esc(m.name)}</span>${kids.length ? `<span>→</span>${kids.map(k => `<button type="button" data-open="${k.id}">${esc(k.name)}</button>`).join("")}` : ""}${!anc.length && !kids.length ? `<span>no tracked parent or descendants</span>` : ""}</div>
 
   ${partners.length ? `<p class="d-h">Most often benchmarked with</p><div class="pairs-mini">${partners.map(([id, v, k]) => `<button type="button" data-pair="${esc(k)}">${esc(BY[id].name)} <small>${v.bench}</small></button>`).join("")}</div>` : ""}
 
-  <p class="d-h">Paper${(m.papers || []).length > 1 ? "s" : ""}</p>
+  ${m.citations == null ? "" : `<p class="d-h">Paper${(m.papers || []).length > 1 ? "s" : ""}</p>
   <ul class="plist">${(m.papers || []).map(p => `<li><div class="ptitle">${doiUrl(p.doi) ? `<a href="${esc(doiUrl(p.doi))}" rel="noopener">${esc(p.title)}</a>` : esc(p.title)}</div><div class="pmeta">${esc(p.venue || "")} · ${p.year || ""} · ${fmtN(p.cited_by_count)} cites in OpenAlex</div></li>`).join("")}</ul>
 
   <p class="d-h">Citing papers <span id="cite-count"></span></p>
   <div class="seg" id="d-use" role="group" aria-label="Filter citing papers by use">${[["all", "all"], ...USES].map(([k, l]) => `<button type="button" data-duse="${k}" aria-pressed="${S.duse === k}">${l}</button>`).join("")}</div>
-  <div id="d-cites"><p class="note">Loading…</p></div>`;
+  <div id="d-cites"><p class="note">Loading…</p></div>`}`;
 }
 function citeItem(c, withModels) {
   const u = c.use || "unclassified";

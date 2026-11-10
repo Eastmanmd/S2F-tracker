@@ -116,12 +116,15 @@ def build(rows, previous, h2h, prev_h2h, new_records, today_iso, baseline):
             "baseline",
             "Change tracking starts here: {} models and {} citations on record. "
             "From the next refresh this entry lists what moved.".format(
-                len(rows), "{:,}".format(sum(r["citations"] for r in rows)))))
+                len(rows), "{:,}".format(sum(r["citations"] or 0 for r in rows)))))
         return {"date": today_iso, "baseline": True, "events": events}
 
     # ---- models entering the registry --------------------------------------
     for row in rows:
         if row["id"] in prev:
+            continue
+        if row["citations"] is None:
+            events.append(_event("model_added", "{} joins the tracker; citation data and ranking are pending.".format(row["name"]), [row["id"]]))
             continue
         events.append(_event(
             "model_added",

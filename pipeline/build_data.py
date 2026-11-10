@@ -343,7 +343,8 @@ def main():
         hfd = hf.get(mid)
         usd = usage_cache.get(mid)
 
-        citations = oa.get("citations_total", 0)
+        has_paper = bool(model.get("papers"))
+        citations = oa.get("citations_total", 0) if has_paper else None
         counts_by_year = oa.get("counts_by_year", {})
         # None, not 0, when nothing could be read: a model whose code is one
         # folder of a monorepo has no stars of its own, and a model with no
@@ -377,7 +378,7 @@ def main():
         vel_label, vel_ratio = velocity(counts_by_year, this_year)
 
         prev_row = (previous or {}).get("models", {}).get(mid, {})
-        citations_12m = trailing_citations(oa.get("citing", []), window_start)
+        citations_12m = trailing_citations(oa.get("citing", []), window_start) if has_paper else None
 
         rows.append({
             "id": mid,
@@ -387,6 +388,9 @@ def main():
             "org": model["org"],
             "year": model["year"],
             "notes": model.get("notes"),
+            "source_url": model.get("source_url"),
+            "code_url": "https://github.com/" + model["github"] if model.get("github") else None,
+            "weights_urls": ["https://huggingface.co/" + name for name in model.get("hf", [])],
             "training_data": model.get("training_data"),
             "context_bp": model.get("context_bp"),
             "output": model.get("output"),
@@ -420,7 +424,7 @@ def main():
             "runnable_detail": runnable_detail,
             "downloads_per_month": downloads,
             "citations_delta": (citations - prev_row["citations"]
-                                if "citations" in prev_row else None),
+                                if citations is not None and prev_row.get("citations") is not None else None),
             "stars_delta": (stars - prev_row["stars"]
                             if stars is not None and prev_row.get("stars") is not None
                             else None),
@@ -459,7 +463,7 @@ def main():
         citations_out[mid] = full[:config.CITING_PER_MODEL]
 
     # ---- score components ---------------------------------------------------
-    attention = normalize(dict((r["id"], math.log1p(r["citations"])) for r in rows))
+    attention = normalize(dict((r["id"], math.log1p(r["citations"])) for r in rows if r["citations"] is not None))
     usage = normalize(dict(
         (r["id"], math.log1p(r["stars"] or 0) + math.log1p(r["downloads_per_month"] or 0))
         for r in rows
@@ -473,7 +477,7 @@ def main():
     # *share* of citations from the last two years before that. A count and a
     # ratio rank models differently, so the leaderboard would have reshuffled
     # on the week the branch flipped, for no reason a reader could see.
-    momentum_raw = dict((r["id"], math.log1p(r["citations_12m"])) for r in rows)
+    momentum_raw = dict((r["id"], math.log1p(r["citations_12m"])) for r in rows if r["citations_12m"] is not None)
     momentum_basis = "citations dated in the trailing {} days".format(
         config.MOMENTUM_WINDOW_DAYS)
     momentum = normalize(momentum_raw)
@@ -486,8 +490,8 @@ def main():
     weights = config.SCORE_WEIGHTS
     for row in rows:
         parts = {
-            "attention": attention.get(row["id"], 0.0),
-            "momentum": momentum.get(row["id"], 0.0),
+            "attention": attention.get(row["id"]),
+            "momentum": momentum.get(row["id"]),
             "usage": usage.get(row["id"]),
             "openness": openness.get(row["id"], 0.0),
             "runnable": row["runnable"],
@@ -503,17 +507,24 @@ def main():
         row["components_missing"] = sorted(k for k in weights if k not in known)
         row["score"] = round(
             100 * sum(known[k] * weights[k] for k in known) / observed, 1)
+        if row["citations"] is None:
+            row["score"] = None
         row["usage_untracked"] = row.pop("_usage_untracked")
         del row["_upkeep_raw"]
         del row["_upkeep_label"]
 
-    rows.sort(key=lambda r: r["score"], reverse=True)
+    rows.sort(key=lambda r: (r["score"] is None, -(r["score"] or 0)))
     # Two ranks. "rank" is across every tracked model, so a number never
     # changes when the gray-zone toggle does; "view_rank" is the position in
     # the default view (core + derivative), which is what the page shows first.
     view_pos = 0
-    for i, row in enumerate(rows, 1):
-        row["rank"] = i
+    rank = 0
+    for row in rows:
+        if row["score"] is None:
+            row["rank"] = row["view_rank"] = None
+            continue
+        rank += 1
+        row["rank"] = rank
         if row["class"] in config.CORE_CLASSES:
             view_pos += 1
             row["view_rank"] = view_pos
@@ -592,7 +603,7 @@ def main():
         with open(os.path.join(config.CITING_DIR, mid + ".json"), "w") as fh:
             json.dump(records, fh)
 
-    total_citations = sum(r["citations"] for r in rows)
+    total_citations = sum(r["citations"] or 0 for r in rows)
     use_totals = {}
     for row in rows:
         for key, count in row["use_counts"].items():
@@ -632,8 +643,8 @@ def main():
         "#", "model", "score", "cites", "12mo", "stars", "dl/mo", "run", "upkeep"))
     for row in rows:
         print("{:<4}{:<24}{:>7}{:>8}{:>7}{:>9}{:>9}{:>7}  {} / {}".format(
-            row["rank"], row["name"][:23], row["score"], row["citations"],
-            row["citations_12m"],
+            row["rank"] or "-", row["name"][:23], row["score"] if row["score"] is not None else "-", row["citations"] if row["citations"] is not None else "-",
+            row["citations_12m"] if row["citations_12m"] is not None else "-",
             "-" if row["stars"] is None else row["stars"],
             "-" if row["downloads_per_month"] is None else int(row["downloads_per_month"]),
             "-" if row["runnable"] is None else int(round(row["runnable"] * 100)),
