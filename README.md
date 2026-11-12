@@ -31,7 +31,7 @@ No. The score measures attention, usage, openness, and runnability; it does not 
 Yes. Use **score weights** on the Tracks view. Scores and ranks update in your browser, and the settings are included in the shareable URL.
 
 **What is the gray zone?**  
-It contains related sequence models, such as DNA language models and specialized splicing models, that are often compared with S2F models. It is hidden by default and can be enabled with the gray zone toggle.
+It contains related models, such as DNA language models, specialized splicing models, and multimodal tools, that are often compared with S2F models. It is hidden by default and can be enabled with the gray zone toggle.
 
 **Does “evaluated together” mean two models were directly compared?**  
 Not necessarily. It counts papers classified as benchmarks that cite both models; it does not verify a head-to-head comparison.

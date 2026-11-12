@@ -147,7 +147,8 @@ def main():
         mid = model["id"]
         fingerprint = registry_fingerprint(model)
         prior = cached.get(mid)
-        if prior and prior.get("fingerprint") == fingerprint:
+        # Retry papers that were not indexed at the previous refresh.
+        if prior and prior.get("fingerprint") == fingerprint and len(prior.get("papers", [])) == len(model["papers"]):
             resolved[mid] = prior
             reused += 1
             continue

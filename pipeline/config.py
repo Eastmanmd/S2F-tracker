@@ -12,7 +12,7 @@ REGISTRY_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "regist
 # behind the gray-zone toggle. Scores are computed across all of them so a
 # model's number does not change when the toggle does.
 CORE_CLASSES = ("core", "derivative")
-GRAY_CLASSES = ("dna-lm", "splicing", "mpra")
+GRAY_CLASSES = ("dna-lm", "splicing", "mpra", "related")
 
 # OpenAlex: citations, yearly counts, and the works that cite each paper.
 # Setting OPENALEX_MAILTO puts requests in the polite pool (faster, more

@@ -5,7 +5,7 @@
     "",
     "Identity",
     "  id         - stable slug; never change once published (URLs and history key on it).",
-    "  class      - core | derivative | dna-lm | splicing | mpra. Only core and",
+    "  class      - core | derivative | dna-lm | splicing | mpra | related. Only core and",
     "               derivative show by default; the rest sit behind the gray-zone toggle.",
     "  parent     - id of the model this one was built from (architecture or weights),",
     "               or null. Drives the lineage view. Must name another id in this file.",
@@ -47,6 +47,422 @@
     "Leave a field null rather than guessing - nulls render as 'not reported'."
   ],
   "models": [
+    {
+      "id": "alphagenome2",
+      "name": "AlphaGenome 2",
+      "class": "derivative",
+      "parent": "alphagenome",
+      "org": "Google DeepMind",
+      "year": 2026,
+      "papers": [
+        {
+          "title": "AlphaGenome 2 predicts regulatory activity and variant effects across cell states",
+          "venue": "Google DeepMind"
+        }
+      ],
+      "source_url": "https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/",
+      "github": "google-deepmind/alphagenome",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "api-only",
+      "license": null,
+      "context_bp": 1048576,
+      "output": "track",
+      "resolution_bp": 1,
+      "n_tracks": null,
+      "readouts": [
+        "accessibility",
+        "histone",
+        "tf_binding",
+        "rna_seq",
+        "expression",
+        "splicing",
+        "contacts"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Cell-type-conditioned successor to AlphaGenome: uses a reference condition or a cell-state embedding in addition to DNA; predicts multiple assay readouts including DNA methylation."
+    },
+    {
+      "id": "bolero",
+      "name": "Bolero",
+      "class": "derivative",
+      "parent": "flashzoi",
+      "org": "Liu Lab / Zhou Lab",
+      "year": 2026,
+      "papers": [
+        {
+          "title": "Predicting cell-state-specific gene regulation from DNA across species",
+          "venue": "bioRxiv"
+        }
+      ],
+      "source_url": "https://liuhlab.github.io/bolero/",
+      "github": "liuhlab/bolero",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": null,
+      "license": null,
+      "context_bp": 524288,
+      "output": "track",
+      "resolution_bp": 32,
+      "n_tracks": null,
+      "readouts": [
+        "accessibility",
+        "rna_seq"
+      ],
+      "species": [
+        "human",
+        "mouse",
+        "multi"
+      ],
+      "notes": "Conditions a frozen Borzoi/Flashzoi backbone on cell-state embeddings to predict accessibility and transcript abundance; optional biological covariates supply further context."
+    },
+    {
+      "id": "corgi",
+      "name": "Corgi",
+      "class": "core",
+      "parent": null,
+      "org": "Aksu & Vingron, Max Planck Institute",
+      "year": 2025,
+      "papers": [
+        {
+          "title": "Context-aware sequence-to-function model of human gene regulation",
+          "venue": "Nature Communications"
+        }
+      ],
+      "source_url": "https://www.nature.com/articles/s41467-026-75527-2",
+      "github": "ekinda/corgi",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [
+        {
+          "host": "zenodo",
+          "id": "18630048"
+        }
+      ],
+      "pypi": null,
+      "access": null,
+      "license": null,
+      "context_bp": 524288,
+      "output": "track",
+      "resolution_bp": 64,
+      "n_tracks": 22,
+      "readouts": [
+        "accessibility",
+        "histone",
+        "tf_binding",
+        "cage",
+        "rna_seq"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Uses DNA and trans-regulator expression to predict cell-context-specific assay tracks, including accessibility, RNA-seq, histone marks and DNA methylation."
+    },
+    {
+      "id": "cerberus",
+      "name": "Cerberus",
+      "class": "derivative",
+      "parent": "borzoi",
+      "org": "Kelley, Yuan, Huang & Linder",
+      "year": 2026,
+      "papers": [
+        {
+          "title": "Cerberus: bidirectional state space blocks improve accuracy and efficiency of regulatory sequence models",
+          "venue": "bioRxiv"
+        }
+      ],
+      "source_url": "https://doi.org/10.64898/2026.10.02.756377",
+      "github": "calico/baskerville",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "open",
+      "license": "Apache-2.0",
+      "context_bp": 786432,
+      "output": "track",
+      "resolution_bp": 32,
+      "n_tracks": null,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone",
+        "cage",
+        "rna_seq"
+      ],
+      "species": [
+        "human",
+        "mouse"
+      ],
+      "notes": "Borzoi-related CNN and bidirectional state-space model; human and mouse heads have different track counts."
+    },
+    {
+      "id": "succeed",
+      "name": "SUCCEED",
+      "class": "core",
+      "parent": null,
+      "org": "Sun Lab and collaborators",
+      "year": 2026,
+      "papers": [
+        {
+          "title": "Large-scale data-driven pre-trained DNA models enhance performance across diverse genomics tasks",
+          "venue": "Nature Communications"
+        }
+      ],
+      "source_url": "https://www.nature.com/articles/s41467-026-73129-6",
+      "github": "bioczsun/SUCCEED",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": null,
+      "license": null,
+      "context_bp": 131072,
+      "output": "track",
+      "resolution_bp": 128,
+      "n_tracks": 6389,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Supervised sequence model pretrained on 6,389 ENCODE tracks; downstream transfer tasks include cell-type-specific epigenomic profiles and chromatin contacts."
+    },
+    {
+      "id": "ntv3-tracks",
+      "name": "Nucleotide Transformer v3 tracks",
+      "class": "core",
+      "parent": null,
+      "org": "InstaDeep and collaborators",
+      "year": 2025,
+      "papers": [
+        {
+          "title": "A multispecies foundation model for genome function prediction, gene annotation and sequence design",
+          "venue": "bioRxiv"
+        }
+      ],
+      "source_url": "https://github.com/instadeepai/nucleotide-transformer/blob/main/docs/nucleotide_transformer_v3.md",
+      "github": "instadeepai/nucleotide-transformer",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "InstaDeepAI/NTv3_tracks"
+      ],
+      "weights": [],
+      "pypi": null,
+      "access": "gated",
+      "license": "InstaDeep Open Model Licence",
+      "context_bp": 1048576,
+      "output": "track",
+      "resolution_bp": 1,
+      "n_tracks": 7362,
+      "readouts": [
+        "accessibility",
+        "tf_binding",
+        "histone",
+        "cage",
+        "rna_seq"
+      ],
+      "species": [
+        "human",
+        "mouse",
+        "multi"
+      ],
+      "notes": "Functional-track version of NTv3; supports variable input lengths up to 1,048,576 bp and uses a species condition. The track count shown is for human; other species have different counts. Weights are gated for non-commercial use."
+    },
+    {
+      "id": "sage-net",
+      "name": "SAGE-net",
+      "class": "related",
+      "parent": null,
+      "org": "Mostafavi Lab and collaborators",
+      "year": 2025,
+      "papers": [
+        {
+          "title": "A scalable approach to investigating sequence-to-function predictions from personal genomes",
+          "venue": "Nature Methods"
+        }
+      ],
+      "source_url": "https://www.nature.com/articles/s41592-026-03124-8",
+      "github": "mostafavilabuw/SAGEnet",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": null,
+      "license": null,
+      "context_bp": null,
+      "output": "gene",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "expression"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Framework for training and evaluating personal- and reference-genome sequence-to-expression models; input lengths and architecture vary by configuration."
+    },
+    {
+      "id": "get",
+      "name": "GET",
+      "class": "related",
+      "parent": null,
+      "org": "GET Foundation",
+      "year": 2023,
+      "papers": [
+        {
+          "title": "A foundation model of transcription across human cell types",
+          "venue": "Nature"
+        }
+      ],
+      "source_url": "https://www.nature.com/articles/s41586-024-08391-z",
+      "github": "GET-Foundation/get_model",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": "non-commercial",
+      "license": "CC-BY-NC-4.0",
+      "context_bp": null,
+      "output": "gene",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "expression"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Predicts cell-type-specific gene expression using accessible-region information and sequence-derived motif features; not a DNA-only model."
+    },
+    {
+      "id": "epibert",
+      "name": "EpiBERT",
+      "class": "related",
+      "parent": null,
+      "org": "Bernstein Lab / Broad Institute",
+      "year": 2025,
+      "papers": [
+        {
+          "title": "A multi-modal transformer for cell type-agnostic regulatory predictions",
+          "venue": "Cell Genomics"
+        }
+      ],
+      "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11872434/",
+      "github": "naumanjaved/EpiBERT",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [
+        {
+          "host": "zenodo",
+          "id": "14504048"
+        }
+      ],
+      "pypi": null,
+      "access": null,
+      "license": "MIT",
+      "context_bp": null,
+      "output": "gene",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "accessibility",
+        "expression"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Multimodal model using sequence and cell-type-specific chromatin accessibility; can be fine-tuned for gene-expression prediction."
+    },
+    {
+      "id": "muss",
+      "name": "MUSS",
+      "class": "related",
+      "parent": null,
+      "org": "Lotfollahi Lab and collaborators",
+      "year": 2026,
+      "papers": [
+        {
+          "title": "MUSS: A Multi-scale and Sequence-based Model for Single-cell Gene Regulation",
+          "venue": "arXiv"
+        }
+      ],
+      "source_url": "https://arxiv.org/abs/2611.08086",
+      "github": "Lotfollahi-lab/MUSS_neurips26",
+      "github_path": null,
+      "github_also": [],
+      "hf": [],
+      "weights": [],
+      "pypi": null,
+      "access": null,
+      "license": null,
+      "context_bp": null,
+      "output": "gene",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [
+        "expression"
+      ],
+      "species": [
+        "human"
+      ],
+      "notes": "Combines DNA-derived peak and gene representations with paired single-cell chromatin and expression information; genomic input geometry varies by region."
+    },
+    {
+      "id": "gpn-star",
+      "name": "GPN-Star",
+      "class": "dna-lm",
+      "parent": "gpn-msa",
+      "org": "Song Lab, UC Berkeley",
+      "year": 2025,
+      "papers": [
+        {
+          "title": "Predicting genome-wide functional constraints with GPN-Star",
+          "venue": "Nature"
+        }
+      ],
+      "source_url": "https://www.nature.com/articles/s41586-026-11005-5",
+      "github": "songlab-cal/gpn",
+      "github_path": null,
+      "github_also": [],
+      "hf": [
+        "songlab/gpn-star-hg38-v100-200m"
+      ],
+      "weights": [],
+      "pypi": null,
+      "access": null,
+      "license": null,
+      "context_bp": null,
+      "output": "embedding",
+      "resolution_bp": null,
+      "n_tracks": null,
+      "readouts": [],
+      "species": [
+        "human",
+        "mouse",
+        "multi"
+      ],
+      "notes": "Phylogeny-aware genomic language model using multiple sequence alignments and species trees to predict functional constraint and variant effects; not an assay-track model."
+    },
     {
       "id": "cherimoya",
       "name": "Cherimoya",

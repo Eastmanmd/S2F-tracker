@@ -198,8 +198,9 @@
    "matches_tracked_model": [],
    "guessed_name": null,
    "first_seen": "2026-11-05",
-   "status": "new",
-   "schema": 1
+   "status": "added",
+   "schema": 1,
+   "note": "Added to registry as bolero."
   },
   {
    "key": "10.64898/2026.10.13.758880",
@@ -585,8 +586,9 @@
    "matches_tracked_model": [],
    "guessed_name": null,
    "first_seen": "2026-11-05",
-   "status": "new",
-   "schema": 1
+   "status": "added",
+   "schema": 1,
+   "note": "Added to registry as cerberus."
   },
   {
    "key": "10.64898/2026.10.02.756289",
@@ -732,6 +734,7 @@
  ],
  "updated": "2026-11-05",
  "counts": {
-  "new": 35
+  "new": 33,
+  "added": 2
  }
 }

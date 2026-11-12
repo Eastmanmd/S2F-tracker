@@ -343,7 +343,8 @@ def main():
         hfd = hf.get(mid)
         usd = usage_cache.get(mid)
 
-        has_paper = bool(model.get("papers"))
+        # A registered paper is not evidence that OpenAlex has been fetched.
+        has_paper = bool(oa.get("versions")) and oa.get("citations_total") is not None
         citations = oa.get("citations_total", 0) if has_paper else None
         counts_by_year = oa.get("counts_by_year", {})
         # None, not 0, when nothing could be read: a model whose code is one
@@ -484,8 +485,9 @@ def main():
 
     openness = {}
     for row in rows:
-        openness[row["id"]] = openness_score(
+        openness[row["id"]] = (openness_score(
             row["access"], row["license"], row["_upkeep_raw"], row["_upkeep_label"])
+            if row["access"] is not None else None)
 
     weights = config.SCORE_WEIGHTS
     for row in rows:
@@ -493,7 +495,7 @@ def main():
             "attention": attention.get(row["id"]),
             "momentum": momentum.get(row["id"]),
             "usage": usage.get(row["id"]),
-            "openness": openness.get(row["id"], 0.0),
+            "openness": openness.get(row["id"]),
             "runnable": row["runnable"],
         }
         # A component with no data is dropped and the rest are renormalized, so

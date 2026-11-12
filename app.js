@@ -16,8 +16,8 @@ const READOUTS = {
   contacts:       ["3D contacts", "contact"],
   mpra:           ["MPRA activity", "mpra"],
 };
-const CLASS_LABEL = { core: "Core S2F", derivative: "Derivative", "dna-lm": "DNA language model", splicing: "Splicing", mpra: "MPRA" };
-const GRAY = new Set(["dna-lm", "splicing", "mpra"]);
+const CLASS_LABEL = { core: "Core S2F", derivative: "Derivative", "dna-lm": "DNA language model", splicing: "Splicing", mpra: "MPRA", related: "Related model" };
+const GRAY = new Set(["dna-lm", "splicing", "mpra", "related"]);
 const ACCESS_LABEL = { open: "open weights", "non-commercial": "non-commercial licence", gated: "gated (sign-up required)", "api-only": "API only", none: "no public weights" };
 const OUTPUT_LABEL = { track: "base-resolved or binned tracks", window: "one value per input window", gene: "one value per gene", contact_map: "contact map", embedding: "sequence embeddings" };
 const COMPONENTS = [
@@ -446,8 +446,8 @@ function drawerHTML(m) {
     ["Resolution", perWindow(m) ? "one value per " + (m.output === "gene" ? "gene" : "window") : m.resolution_bp ? `${fmtN(m.resolution_bp)} bp` : `<small>not reported</small>`],
     ["Output tracks", m.n_tracks ? fmtN(m.n_tracks) : m.output === "embedding" ? "embeddings" : `<small>not reported</small>`],
     ["Species", esc((m.species || []).join(", "))],
-    ["Access", esc(ACCESS_LABEL[m.access] || m.access)],
-    ["Licence", esc(m.license || "none found")],
+    ["Access", esc(ACCESS_LABEL[m.access] || m.access || "not yet verified")],
+    ["Licence", esc(m.license || "not yet verified")],
   ];
   const vel = m.velocity ? `${esc(m.velocity)}${m.velocity_ratio ? ` <small>(${m.velocity_ratio}× the prior rate)</small>` : ""}` : "";
   return `<button class="close" type="button" data-close>esc ✕</button>
@@ -465,7 +465,7 @@ function drawerHTML(m) {
   ${trainingDataHTML(m.training_data)}
 
   <p class="d-h">${m._s == null ? "Score pending" : `Score ${m._s.toFixed(1)} / 100 ${weightsDefault() ? "" : `<span>published ${m.score.toFixed(1)}</span>`}`}</p>
-  ${m._s == null ? `<p class="note">Not ranked: no indexed model paper is available for citation metrics.</p>` : ""}
+  ${m._s == null ? `<p class="note">Not ranked: citation metrics have not yet been collected.</p>` : ""}
   ${compRows(m)}
   ${(m.components_missing || []).length && m._s != null ? `<p class="note">Not measured: ${esc(m.components_missing.join(", "))}. Its weight is shared among the other components rather than scored as zero.</p>` : ""}
   ${m.usage_untracked ? `<p class="note">Nothing public to count usage on (no repository of its own, no tracked weights host or package), so usage scores 0 rather than being left out.${m.github ? "" : " With no code repository, runnability scores 0 too."}</p>` : ""}
@@ -816,7 +816,7 @@ function renderMethods() {
     <p>The tracker follows ${fmtN(META.models_tracked)} sequence-to-function (S2F) models: networks that read DNA sequence and predict a molecular readout such as accessibility, TF binding, histone marks, transcription or splicing. Data are refreshed every Monday by a GitHub Action and served as static JSON from <code>data/</code>. Last refresh: <strong>${esc(fmtDate(META.updated))}</strong>.</p>
 
     <h2>What counts as an S2F model</h2>
-    <p><strong>Core</strong> (${cc.core || 0}) models predict assay readouts from sequence: Basset, Basenji, Enformer, Borzoi, BPNet, AlphaGenome and their peers. <strong>Derivatives</strong> (${cc.derivative || 0}) fine-tune or re-implement a core model (Flashzoi, Scooby, Decima). The <strong>gray zone</strong> is hidden by default and holds DNA language models (${cc["dna-lm"] || 0}), dedicated splicing models (${cc.splicing || 0}) and MPRA-activity models (${cc.mpra || 0}): sequence models that are routinely benchmarked against S2F models but either predict no assay track or cover one narrow readout. Ranks shown with the gray zone off are ranks among core and derivative models only.</p>
+    <p><strong>Core</strong> (${cc.core || 0}) models predict assay readouts from sequence: Basset, Basenji, Enformer, Borzoi, BPNet, AlphaGenome and their peers. <strong>Derivatives</strong> (${cc.derivative || 0}) fine-tune or re-implement a core model (Flashzoi, Scooby, Decima). The <strong>gray zone</strong> is hidden by default and holds DNA language models (${cc["dna-lm"] || 0}), dedicated splicing models (${cc.splicing || 0}), MPRA-activity models (${cc.mpra || 0}) and related models (${cc.related || 0}). Some use additional biological inputs; see each model's notes. Ranks shown with the gray zone off are ranks among core and derivative models only.</p>
     <p>Species: human and mouse. Geometry (input context, output resolution, track count) is curated from each paper; where a paper reports no single number it is shown as not reported rather than guessed.</p>
 
     <h2>The ruler</h2>

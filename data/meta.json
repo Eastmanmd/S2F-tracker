@@ -1,14 +1,15 @@
 {
  "updated": "2026-11-05",
- "models_tracked": 31,
+ "models_tracked": 42,
  "total_citations": 17656,
- "open_weights": 24,
+ "open_weights": 25,
  "class_counts": {
-  "core": 17,
-  "derivative": 4,
-  "dna-lm": 7,
+  "core": 20,
+  "derivative": 7,
+  "dna-lm": 8,
   "splicing": 2,
-  "mpra": 1
+  "mpra": 1,
+  "related": 4
  },
  "actively_maintained": 6,
  "weights": {
