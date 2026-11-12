@@ -85,7 +85,8 @@ main{padding-bottom:40px;min-height:60vh}
 .controls{padding-top:14px}
 .ctl-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
 .ctl{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
-.ctl>span{font:12px var(--sans);color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.ctl>span,.ctl>label{font:12px var(--sans);color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.ctl select{max-width:100%;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:6px 8px;font:13px var(--sans)}
 .seg{display:inline-flex;border:1px solid var(--line);border-radius:4px;overflow:hidden;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .seg button{padding:6px 10px;font:13px var(--sans);color:var(--ink2);white-space:nowrap}
 .seg button+button{border-left:1px solid var(--line)}

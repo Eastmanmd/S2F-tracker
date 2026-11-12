@@ -83,7 +83,7 @@ const doiUrl = d => !d ? null : d.startsWith("http") ? d : "https://doi.org/" + 
 let MODELS = [], BY = {}, KIDS = {}, META = {}, H2H = null, CHANGELOG = null, CITE_INDEX = null, BENCHMARKS = null;
 const CITES = {};          // per-model citing papers, loaded on demand
 const S = {
-  view: "tracks", sel: null, gray: false, sp: "all", ro: new Set(), q: "", sort: "score", reverse: false,
+  view: "tracks", sel: null, gray: false, sp: "all", inputs: "all", ro: new Set(), q: "", sort: "score", reverse: false,
   w: { ...DEFAULT_W }, pair: null, pmode: "bench",
   puse: "all", pdom: "all", pmodel: "all", psort: "new", pshow: 60, ptab: "browse",
   duse: "all", dshow: 25, benchmark: null,
@@ -122,11 +122,13 @@ function matchesQuery(m, q) {
   const hay = [m.id, m.name, m.org, CLASS_LABEL[m.class], m.output, ...(m.readouts || []).map(roLabel), ...(m.species || [])].join(" ").toLowerCase();
   return q.split(/\s+/).every(t => hay.includes(t));
 }
+const inputClass = m => ["dna-only", "additional"].includes(m.input_requirements?.classification) ? m.input_requirements.classification : "unknown";
+const matchesInputs = m => S.inputs === "all" || inputClass(m) === S.inputs;
 function list() {
   const q = S.q.trim().toLowerCase();
   return universe().filter(m =>
     (S.sp === "all" || (m.species || []).includes(S.sp) || (m.species || []).includes("multi")) &&
-    (!S.ro.size || (m.readouts || []).some(r => S.ro.has(r))) &&
+    matchesInputs(m) && (!S.ro.size || (m.readouts || []).some(r => S.ro.has(r))) &&
     matchesQuery(m, q)
   ).sort((a, b) => (S.reverse ? -1 : 1) * (SORTS[S.sort] || SORTS.score)(a, b));
 }
@@ -141,6 +143,7 @@ function readHash() {
   S.sel = p.get("m") && BY[p.get("m")] ? p.get("m") : null;
   S.gray = p.get("g") === "1";
   S.sp = ["human", "mouse"].includes(p.get("sp")) ? p.get("sp") : "all";
+  S.inputs = ["dna-only", "additional", "unknown"].includes(p.get("inputs")) ? p.get("inputs") : "all";
   S.ro = new Set((p.get("ro") || "").split(",").filter(k => READOUTS[k]));
   S.sort = SORTS[p.get("s")] ? p.get("s") : "score";
   S.benchmark = p.get("b") || null;
@@ -160,6 +163,7 @@ function hashFor(over = {}) {
   if (st.sel) p.set("m", st.sel);
   if (st.gray) p.set("g", "1");
   if (st.sp !== "all") p.set("sp", st.sp);
+  if (st.inputs !== "all") p.set("inputs", st.inputs);
   if (st.ro.size) p.set("ro", [...st.ro].join(","));
   if (st.sort !== "score") p.set("s", st.sort);
   if (st.reverse) p.set("rev", "1");
@@ -256,6 +260,7 @@ function buildControls() {
     if (COMPONENTS.every(([c]) => !S.w[c])) S.w[k] = 5;
     update();
   });
+  $("#input-filter")?.addEventListener("change", e => { S.inputs = e.target.value; update(); });
   $("#q").addEventListener("input", e => { S.q = e.target.value; update(); });
   $("#q").addEventListener("keydown", e => {
     if (e.key === "Enter") {
@@ -270,6 +275,7 @@ function syncControls() {
   $("#sort-direction").textContent = direction === "ascending" ? "↑ ascending" : "↓ descending";
   $("#sort-direction").setAttribute("aria-label", `Sort ${direction}; activate to reverse order`);
   $$("[data-sp]").forEach(b => b.setAttribute("aria-pressed", b.dataset.sp === S.sp));
+  if ($("#input-filter")) $("#input-filter").value = S.inputs;
   $$("[data-gray]").forEach(b => b.setAttribute("aria-pressed", S.gray));
   $$("#chips [data-ro]").forEach(b => b.setAttribute("aria-pressed", S.ro.has(b.dataset.ro)));
   $("[data-ro-clear]").hidden = !S.ro.size;
@@ -332,7 +338,7 @@ function renderTracks() {
     ${changesHTML()}
     <div class="grid" id="grid">
       <div class="head"><div class="hcell hl">Model · score</div><div class="trk"><div class="in ruler" id="axis">${axisTicks(true, true)}</div></div><div class="hcell hs">Citations · trend</div></div>
-      ${L.length ? L.map(m => rowHTML(m, R[m.id], m.citations_12m >= hotCutoff)).join("") : `<div class="empty">No tracks match. Clear a readout, the species filter or the goto box${S.gray ? "" : ", or switch on the gray zone"}.</div>`}
+      ${L.length ? L.map(m => rowHTML(m, R[m.id], m.citations_12m >= hotCutoff)).join("") : `<div class="empty">No tracks match. Clear a readout, the species or inputs filter, or the goto box${S.gray ? "" : ", or switch on the gray zone"}.</div>`}
       <div class="xh" id="xh" hidden></div><div class="tip" id="tip" hidden></div>
     </div>
     <div class="legend">
@@ -437,6 +443,15 @@ function trainingDataHTML(training) {
   return `<p class="d-h">Training data</p><dl class="dl">${fields.map(([label, key]) => `<dt>${label}</dt><dd>${esc(training[key] || "Not yet curated.")}</dd>`).join("")}</dl>
     <p class="note">Sources: ${(training.references || []).map(ref => `<a href="${esc(ref.url)}" rel="noopener">${esc(ref.label)}</a>`).join(" · ") || "not yet curated"}</p>`;
 }
+function inputRequirementsHTML(inputs) {
+  const names = {"dna-only": "DNA only", additional: "Additional inputs", unknown: "Unknown"};
+  const category = inputs && names[inputs.classification] ? inputs.classification : "unknown";
+  const items = inputs && Array.isArray(inputs.items) ? inputs.items : [];
+  const details = items.length ? `<dl class="dl">${items.map(i => `<dt>${esc(i.label)}</dt><dd>${esc(i.requirement)}${i.details ? ` <small>· ${esc(i.details)}</small>` : ""}</dd>`).join("")}</dl>` : `<p class="note">Prediction inputs have not yet been verified.</p>`;
+  const note = inputs?.note ? `<p class="note">${esc(inputs.note)}</p>` : "";
+  const source = /^https?:\/\//.test(inputs?.source_url || "") ? `<p class="note"><a href="${esc(inputs.source_url)}" rel="noopener">Input information source</a></p>` : "";
+  return `<p class="d-h">Prediction inputs <span>${names[category]}</span></p>${details}${note}${source}`;
+}
 function drawerHTML(m) {
   const R = rankMap(), g = geom(m), kids = (KIDS[m.id] || []).map(id => BY[id]).sort((a, b) => a.year - b.year);
   const anc = ancestors(m.id), partners = pairPartners(m.id);
@@ -459,6 +474,7 @@ function drawerHTML(m) {
 
   <p class="d-h">Spec sheet</p>
   <dl class="dl">${spec.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>
+  ${inputRequirementsHTML(m.input_requirements)}
   <p class="d-h">Readouts</p>
   <div class="chips" style="padding:0">${(m.readouts || []).length ? m.readouts.map(k => `<span class="chip" aria-pressed="true" style="--c:${roColor(k)}"><i></i>${esc(roLabel(k))}</span>`).join("") : `<span class="note">none: sequence embeddings only</span>`}</div>
 
@@ -556,7 +572,7 @@ function closeDrawer() {
 /* ---------------- view: lineage ---------------- */
 function renderLineage() {
   const L = universe().filter(m => (S.sp === "all" || (m.species || []).includes(S.sp) || (m.species || []).includes("multi")));
-  const q = S.q.trim().toLowerCase(), hit = m => (!S.ro.size || (m.readouts || []).some(r => S.ro.has(r))) && matchesQuery(m, q);
+  const q = S.q.trim().toLowerCase(), hit = m => matchesInputs(m) && (!S.ro.size || (m.readouts || []).some(r => S.ro.has(r))) && matchesQuery(m, q);
   const vis = new Set(L.map(m => m.id));
   const kids = id => (KIDS[id] || []).filter(k => vis.has(k)).map(k => BY[k]);
   const desc = id => kids(id).reduce((a, k) => a + 1 + desc(k.id), 0);
@@ -817,6 +833,7 @@ function renderMethods() {
 
     <h2>What counts as an S2F model</h2>
     <p><strong>Core</strong> (${cc.core || 0}) models predict assay readouts from sequence: Basset, Basenji, Enformer, Borzoi, BPNet, AlphaGenome and their peers. <strong>Derivatives</strong> (${cc.derivative || 0}) fine-tune or re-implement a core model (Flashzoi, Scooby, Decima). The <strong>gray zone</strong> is hidden by default and holds DNA language models (${cc["dna-lm"] || 0}), dedicated splicing models (${cc.splicing || 0}), MPRA-activity models (${cc.mpra || 0}) and related models (${cc.related || 0}). Some use additional biological inputs; see each model's notes. Ranks shown with the gray zone off are ranks among core and derivative models only.</p>
+    <p>The <strong>inputs</strong> filter describes prediction-time requirements, not training data. <strong>DNA only</strong> means no extra biological context beyond sequence and routine species selection is required; <strong>additional inputs</strong> indicates other required information, such as a cell-state condition, measured profile, alignment or gene-annotation features. Models with unverified or configuration-dependent requirements are <strong>unknown</strong>. Open a model's spec sheet for input details, optional alternatives and sources.</p>
     <p>Species: human and mouse. Geometry (input context, output resolution, track count) is curated from each paper; where a paper reports no single number it is shown as not reported rather than guessed.</p>
 
     <h2>The ruler</h2>
@@ -960,7 +977,7 @@ async function getJSON(path) {
     update();
     if (S.sel) openDrawer(S.sel, false);
   } catch (e) {
-    $("#loading").hidden = true;
+    const loading = $("#loading"); if (loading) loading.hidden = true;
     const el = $("#load-error"); el.hidden = false;
     el.textContent = `Couldn't load the data (${e.message}). If you opened index.html from disk, serve the folder instead: python3 -m http.server`;
   }

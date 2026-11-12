@@ -393,6 +393,7 @@ def main():
             "code_url": "https://github.com/" + model["github"] if model.get("github") else None,
             "weights_urls": ["https://huggingface.co/" + name for name in model.get("hf", [])],
             "training_data": model.get("training_data"),
+            "input_requirements": model.get("input_requirements"),
             "context_bp": model.get("context_bp"),
             "output": model.get("output"),
             "resolution_bp": model.get("resolution_bp"),

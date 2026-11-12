@@ -65,6 +65,14 @@ catch (e) { document.documentElement.dataset.theme = "light"; }</script>
       <div class="ctl"><span>species</span>
         <div class="seg"><button data-sp="all">all</button><button data-sp="human">human</button><button data-sp="mouse">mouse</button></div>
       </div>
+      <div class="ctl"><label for="input-filter">inputs</label>
+        <select id="input-filter" aria-label="Filter models by prediction inputs" title="DNA only needs no extra biological context beyond sequence and routine species selection. Additional inputs require other biological context or features.">
+          <option value="all">all inputs</option>
+          <option value="dna-only">DNA only</option>
+          <option value="additional">additional inputs</option>
+          <option value="unknown">unknown</option>
+        </select>
+      </div>
       <button class="toggle" data-gray type="button"><i aria-hidden="true"></i>gray zone <small id="gray-count"></small></button>
       <button class="toggle" id="weights-btn" type="button" aria-expanded="false" aria-controls="weights"><i aria-hidden="true"></i>score weights</button>
     </div>

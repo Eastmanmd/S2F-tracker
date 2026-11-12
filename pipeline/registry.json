@@ -49,6 +49,28 @@
   "models": [
     {
       "id": "alphagenome2",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          },
+          {
+            "label": "Cell type or tissue condition",
+            "requirement": "required",
+            "details": "Choose a reference condition or supply expression conditioning."
+          },
+          {
+            "label": "Single-cell expression profile",
+            "requirement": "optional",
+            "details": "Use your own measured profile instead of a reference condition."
+          }
+        ],
+        "note": "A reference condition is sufficient; a new measured profile is not always required.",
+        "source_url": "https://www.alphagenomedocs.com/colabs/v2/choosing_a_condition.html"
+      },
       "name": "AlphaGenome 2",
       "class": "derivative",
       "parent": "alphagenome",
@@ -90,6 +112,23 @@
     },
     {
       "id": "bolero",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          },
+          {
+            "label": "Cell-state embedding",
+            "requirement": "required",
+            "details": "An atlas-derived embedding conditions the model; optional covariates include tissue, age, and TF activity."
+          }
+        ],
+        "note": "",
+        "source_url": "https://liuhlab.github.io/bolero/"
+      },
       "name": "Bolero",
       "class": "derivative",
       "parent": "flashzoi",
@@ -127,6 +166,23 @@
     },
     {
       "id": "corgi",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          },
+          {
+            "label": "Trans-regulator expression",
+            "requirement": "required",
+            "details": "A vector of expression levels provides cellular context."
+          }
+        ],
+        "note": "",
+        "source_url": "https://github.com/ekinda/corgi"
+      },
       "name": "Corgi",
       "class": "core",
       "parent": null,
@@ -170,6 +226,18 @@
     },
     {
       "id": "cerberus",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.64898/2026.10.02.756377"
+      },
       "name": "Cerberus",
       "class": "derivative",
       "parent": "borzoi",
@@ -209,6 +277,18 @@
     },
     {
       "id": "succeed",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://www.nature.com/articles/s41467-026-73129-6"
+      },
       "name": "SUCCEED",
       "class": "core",
       "parent": null,
@@ -245,6 +325,23 @@
     },
     {
       "id": "ntv3-tracks",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          },
+          {
+            "label": "Species selection",
+            "requirement": "required",
+            "details": "A species token chooses the appropriate track head."
+          }
+        ],
+        "note": "No measured cell-state or chromatin profile is required for the released tracks model.",
+        "source_url": "https://github.com/instadeepai/nucleotide-transformer/blob/main/docs/nucleotide_transformer_v3.md"
+      },
       "name": "Nucleotide Transformer v3 tracks",
       "class": "core",
       "parent": null,
@@ -287,6 +384,18 @@
     },
     {
       "id": "sage-net",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequences",
+            "requirement": "required",
+            "details": "p-SAGE-net uses reference and personal haplotype sequences; configurations vary."
+          }
+        ],
+        "note": "Personal-genome and reference-only models use different sequence inputs.",
+        "source_url": "https://doi.org/10.1038/s41592-026-03124-8"
+      },
       "name": "SAGE-net",
       "class": "related",
       "parent": null,
@@ -321,6 +430,28 @@
     },
     {
       "id": "get",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "Sequence-derived motif features",
+            "requirement": "required",
+            "details": "Motif features are computed for accessible regions."
+          },
+          {
+            "label": "Accessible-region information",
+            "requirement": "required",
+            "details": "Cell-type-specific accessibility defines the input regions."
+          },
+          {
+            "label": "Quantitative accessibility signal",
+            "requirement": "configuration-dependent",
+            "details": "Some model configurations also use signal values."
+          }
+        ],
+        "note": "GET consumes region-by-motif features rather than a single continuous DNA sequence.",
+        "source_url": "https://www.nature.com/articles/s41586-024-08391-z"
+      },
       "name": "GET",
       "class": "related",
       "parent": null,
@@ -355,6 +486,23 @@
     },
     {
       "id": "epibert",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          },
+          {
+            "label": "Chromatin accessibility",
+            "requirement": "required",
+            "details": "Sequence is combined with cell-type-specific accessibility information."
+          }
+        ],
+        "note": "",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11872434/"
+      },
       "name": "EpiBERT",
       "class": "related",
       "parent": null,
@@ -395,6 +543,23 @@
     },
     {
       "id": "muss",
+      "input_requirements": {
+        "classification": "unknown",
+        "items": [
+          {
+            "label": "DNA-derived peak and gene features",
+            "requirement": "configuration-dependent",
+            "details": "Used alongside cell-specific omics in the study."
+          },
+          {
+            "label": "Single-cell measurements",
+            "requirement": "unknown",
+            "details": "Exact prediction-time requirements vary by task and need review."
+          }
+        ],
+        "note": "Training inputs are not necessarily required for every inference task.",
+        "source_url": "https://arxiv.org/abs/2611.08086"
+      },
       "name": "MUSS",
       "class": "related",
       "parent": null,
@@ -429,6 +594,23 @@
     },
     {
       "id": "gpn-star",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "Multiple sequence alignment",
+            "requirement": "required",
+            "details": "Aligned DNA sequences provide evolutionary context."
+          },
+          {
+            "label": "Species tree",
+            "requirement": "required",
+            "details": "A phylogenetic tree accompanies the alignment."
+          }
+        ],
+        "note": "",
+        "source_url": "https://www.nature.com/articles/s41586-026-11005-5"
+      },
       "name": "GPN-Star",
       "class": "dna-lm",
       "parent": "gpn-msa",
@@ -465,6 +647,18 @@
     },
     {
       "id": "cherimoya",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://genomicsxai.github.io/blogs/2026-011/"
+      },
       "name": "Cherimoya",
       "class": "derivative",
       "parent": "chrombpnet",
@@ -490,6 +684,18 @@
     },
     {
       "id": "deepbind",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/nbt.3300"
+      },
       "name": "DeepBind",
       "class": "core",
       "parent": null,
@@ -529,6 +735,18 @@
     },
     {
       "id": "deepsea",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/nmeth.3547"
+      },
       "name": "DeepSEA",
       "class": "core",
       "parent": null,
@@ -569,6 +787,18 @@
     },
     {
       "id": "basset",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1101/gr.200535.115"
+      },
       "name": "Basset",
       "class": "core",
       "parent": null,
@@ -602,6 +832,18 @@
     },
     {
       "id": "basenji",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1101/gr.227819.117"
+      },
       "name": "Basenji",
       "class": "core",
       "parent": "basset",
@@ -643,6 +885,18 @@
     },
     {
       "id": "expecto",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41588-018-0160-6"
+      },
       "name": "ExPecto",
       "class": "core",
       "parent": "deepsea",
@@ -681,6 +935,23 @@
     },
     {
       "id": "xpresso",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          },
+          {
+            "label": "Gene-structure features",
+            "requirement": "required",
+            "details": "The standard model also uses mRNA-stability-associated features derived from gene and UTR annotations."
+          }
+        ],
+        "note": "",
+        "source_url": "https://shendure-web.gs.washington.edu/documents/agarwal_cell_2020.pdf"
+      },
       "name": "Xpresso",
       "class": "core",
       "parent": null,
@@ -715,6 +986,18 @@
     },
     {
       "id": "basenji2",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1371/journal.pcbi.1008050"
+      },
       "name": "Basenji2",
       "class": "core",
       "parent": "basenji",
@@ -752,6 +1035,18 @@
     },
     {
       "id": "akita",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41592-020-0958-x"
+      },
       "name": "Akita",
       "class": "core",
       "parent": "basenji",
@@ -785,6 +1080,18 @@
     },
     {
       "id": "enformer",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41592-021-01252-x"
+      },
       "name": "Enformer",
       "class": "core",
       "parent": "basenji2",
@@ -843,6 +1150,18 @@
     },
     {
       "id": "bpnet",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41588-021-00782-6"
+      },
       "name": "BPNet",
       "class": "core",
       "parent": null,
@@ -889,6 +1208,18 @@
     },
     {
       "id": "sei",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41588-022-01102-2"
+      },
       "name": "Sei",
       "class": "core",
       "parent": "deepsea",
@@ -924,6 +1255,18 @@
     },
     {
       "id": "orca",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41588-022-01065-4"
+      },
       "name": "Orca",
       "class": "core",
       "parent": null,
@@ -957,6 +1300,23 @@
     },
     {
       "id": "scbasset",
+      "input_requirements": {
+        "classification": "unknown",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": "DNA sequence encodes regions."
+          },
+          {
+            "label": "Cell embeddings",
+            "requirement": "configuration-dependent",
+            "details": "Cell embeddings are learned from accessibility data; availability at prediction time depends on the workflow."
+          }
+        ],
+        "note": "Check whether a particular workflow uses learned reference-cell embeddings or requires new measurements.",
+        "source_url": "https://docs.scvi-tools.org/en/stable/user_guide/models/scbasset.html"
+      },
       "name": "scBasset",
       "class": "core",
       "parent": "basset",
@@ -991,6 +1351,18 @@
     },
     {
       "id": "borzoi",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41588-024-02053-6"
+      },
       "name": "Borzoi",
       "class": "core",
       "parent": "enformer",
@@ -1050,6 +1422,18 @@
     },
     {
       "id": "puffin",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1126/science.adj0116"
+      },
       "name": "Puffin",
       "class": "core",
       "parent": null,
@@ -1083,6 +1467,18 @@
     },
     {
       "id": "chrombpnet",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1101/2024.12.25.630221"
+      },
       "name": "ChromBPNet",
       "class": "core",
       "parent": "bpnet",
@@ -1121,6 +1517,18 @@
     },
     {
       "id": "flashzoi",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1093/bioinformatics/btaf467"
+      },
       "name": "Flashzoi",
       "class": "derivative",
       "parent": "borzoi",
@@ -1171,6 +1579,23 @@
     },
     {
       "id": "scooby",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          },
+          {
+            "label": "Cell embedding",
+            "requirement": "required",
+            "details": "A precomputed cell embedding conditions the cell-specific decoder."
+          }
+        ],
+        "note": "",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11429888/"
+      },
       "name": "scooby",
       "class": "derivative",
       "parent": "borzoi",
@@ -1214,6 +1639,23 @@
     },
     {
       "id": "decima",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          },
+          {
+            "label": "Gene location or mask",
+            "requirement": "required",
+            "details": "Custom sequences require gene-region coordinates."
+          }
+        ],
+        "note": "The released model predicts across trained cell types and conditions without a new cell-state profile.",
+        "source_url": "https://genentech.github.io/decima/tutorials/5-gene-expression-prediction.html"
+      },
       "name": "Decima",
       "class": "derivative",
       "parent": "borzoi",
@@ -1247,6 +1689,18 @@
     },
     {
       "id": "alphagenome",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41586-025-10014-0"
+      },
       "name": "AlphaGenome",
       "class": "core",
       "parent": "enformer",
@@ -1311,6 +1765,18 @@
     },
     {
       "id": "spliceai",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1016/j.cell.2018.12.015"
+      },
       "name": "SpliceAI",
       "class": "splicing",
       "parent": null,
@@ -1344,6 +1810,18 @@
     },
     {
       "id": "pangolin",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1186/s13059-022-02664-4"
+      },
       "name": "Pangolin",
       "class": "splicing",
       "parent": "spliceai",
@@ -1378,6 +1856,18 @@
     },
     {
       "id": "malinois",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41586-024-08070-z"
+      },
       "name": "Malinois",
       "class": "mpra",
       "parent": null,
@@ -1411,6 +1901,18 @@
     },
     {
       "id": "dnabert",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1093/bioinformatics/btab083"
+      },
       "name": "DNABERT",
       "class": "dna-lm",
       "parent": null,
@@ -1442,6 +1944,18 @@
     },
     {
       "id": "dnabert2",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.48550/arxiv.2306.15006"
+      },
       "name": "DNABERT-2",
       "class": "dna-lm",
       "parent": "dnabert",
@@ -1475,6 +1989,18 @@
     },
     {
       "id": "nucleotide-transformer",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41592-024-02523-z"
+      },
       "name": "Nucleotide Transformer",
       "class": "dna-lm",
       "parent": null,
@@ -1508,6 +2034,18 @@
     },
     {
       "id": "hyenadna",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.48550/arxiv.2306.15794"
+      },
       "name": "HyenaDNA",
       "class": "dna-lm",
       "parent": null,
@@ -1547,6 +2085,18 @@
     },
     {
       "id": "caduceus",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.48550/arxiv.2403.03234"
+      },
       "name": "Caduceus",
       "class": "dna-lm",
       "parent": null,
@@ -1580,6 +2130,18 @@
     },
     {
       "id": "gpn-msa",
+      "input_requirements": {
+        "classification": "additional",
+        "items": [
+          {
+            "label": "Multiple sequence alignment",
+            "requirement": "required",
+            "details": "The model uses aligned DNA sequences from related species."
+          }
+        ],
+        "note": "",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10592768/"
+      },
       "name": "GPN-MSA",
       "class": "dna-lm",
       "parent": null,
@@ -1613,6 +2175,18 @@
     },
     {
       "id": "evo2",
+      "input_requirements": {
+        "classification": "dna-only",
+        "items": [
+          {
+            "label": "DNA sequence",
+            "requirement": "required",
+            "details": ""
+          }
+        ],
+        "note": "For the tracked model, assay-specific predictions do not require a user-supplied cell-state or chromatin profile.",
+        "source_url": "https://doi.org/10.1038/s41586-026-10176-5"
+      },
       "name": "Evo 2",
       "class": "dna-lm",
       "parent": null,

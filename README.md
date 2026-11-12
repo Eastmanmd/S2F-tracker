@@ -24,6 +24,9 @@ In JSON files in this repository's `data/` directory. The model registry is main
 **What does each track show?**  
 A track runs from the model's output resolution to its input length on a logarithmic base-pair ruler. Its colored stripes indicate the readouts it predicts.
 
+**Can I compare what inputs models require?**  
+Yes. Use the **inputs** filter on Tracks or Lineage, and open a model's spec sheet for its prediction-time inputs and source. “DNA only” allows routine species selection; “additional inputs” includes required cell-state information, chromatin data, alignments, or other features. Some requirements remain unknown or vary by configuration. Training data are not treated as inference inputs.
+
 **Does a higher score mean a model is more accurate?**  
 No. The score measures attention, usage, openness, and runnability; it does not measure predictive accuracy.
 
